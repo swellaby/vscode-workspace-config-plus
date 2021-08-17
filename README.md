@@ -1,1 +1,1 @@
-# vscode-workspace-config-plus
+# VS Code Workspace Config+
