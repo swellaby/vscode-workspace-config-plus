@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.1.0",
   "description": "VS Code extension for improved workspace configuration",
-  "main": "",
+  "main": "src/index.js",
   "engines": {
     "node": ">=12",
     "vscode": "^1.59.0"

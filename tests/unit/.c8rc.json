@@ -1,6 +1,6 @@
 {
   "exclude": [
-    "index.js",
+    "src/index.js",
     "tests/**",
     ".eslintrc.js",
     ".coverage"
