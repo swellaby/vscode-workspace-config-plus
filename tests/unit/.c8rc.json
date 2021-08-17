@@ -1,0 +1,24 @@
+{
+  "exclude": [
+    "index.js",
+    "tests/**",
+    ".eslintrc.js",
+    ".coverage"
+  ],
+  "reporter": [
+    "html",
+    "lcov",
+    "cobertura",
+    "text",
+    "text-summary"
+  ],
+  "cache": true,
+  "all": true,
+  "per-file": true,
+  "lines": 100,
+  "statements": 100,
+  "functions": 100,
+  "branches": 100,
+  "check-coverage": false,
+  "report-dir": ".coverage"
+}
