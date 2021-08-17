@@ -9,6 +9,7 @@
     "vscode": "^1.59.0"
   },
   "scripts": {
+    "build": "npm test",
     "test": "exit 0"
   },
   "author": {

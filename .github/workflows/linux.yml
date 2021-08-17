@@ -1,0 +1,37 @@
+name: linux-ci
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: linux-node-v${{ matrix.node-version }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [12, 14, 15, 16]
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+
+      - name: use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: install dependencies
+        run: npm install
+
+      - name: run build script
+        run: npm run build
+
+      # - name: publish code coverage results
+      #   uses: codecov/codecov-action@v2
+      #   if: matrix.node-version == 16
+      #   with:
+      #     files: .coverage/unit/cobertura-coverage.xml
