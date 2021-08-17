@@ -1,0 +1,34 @@
+{
+  "name": "vscode-workspace-config-plus",
+  "private": true,
+  "version": "0.1.0",
+  "description": "VS Code extension for improved workspace configuration",
+  "main": "",
+  "engines": {
+    "node": ">=12",
+    "vscode": "^1.59.0"
+  },
+  "scripts": {
+    "test": "exit 0"
+  },
+  "author": {
+    "email": "opensource@swellaby.com",
+    "name": "Swellaby",
+    "url": "https://swellaby.com"
+  },
+  "contributors": [
+    {
+      "email": "opensource@swellaby.com",
+      "name": "Caleb Cartwright",
+      "url": "https://github.com/calebcartwright"
+    }
+  ],
+  "license": "MIT",
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "devDependencies": {
+  },
+  "dependencies": {
+  }
+}
