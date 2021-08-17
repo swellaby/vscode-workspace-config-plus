@@ -20,5 +20,5 @@
   "functions": 100,
   "branches": 100,
   "check-coverage": false,
-  "report-dir": ".coverage"
+  "report-dir": ".coverage/unit"
 }

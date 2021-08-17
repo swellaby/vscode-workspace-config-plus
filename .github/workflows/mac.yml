@@ -28,4 +28,4 @@ jobs:
         run: npm install
 
       - name: run build script
-        run: npm run build
+        run: npm run coverage

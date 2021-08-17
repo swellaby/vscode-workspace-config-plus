@@ -10,6 +10,7 @@
   },
   "scripts": {
     "build": "npm test",
+    "clean": "rimraf .testresults .coverage",
     "coverage": "npm run coverage:unit",
     "coverage:unit": "c8 -c tests/unit/.c8rc.json npm run test:unit",
     "test": "npm run test:unit",
@@ -37,6 +38,7 @@
     "mocha": "^9.0.3",
     "mocha-multi-reporters": "^1.5.1",
     "mocha-sonarqube-reporter": "^1.0.2",
+    "rimraf": "^3.0.2",
     "sinon": "^11.1.2"
   },
   "dependencies": {
