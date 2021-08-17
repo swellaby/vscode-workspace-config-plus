@@ -1,0 +1,7 @@
+node_modules/
+.testresults/
+.coverage/
+*.tar*
+*.tgz*
+.ntvs_analysis.dat*
+npm-debug*
