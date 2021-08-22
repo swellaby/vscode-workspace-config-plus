@@ -15,14 +15,14 @@ const _loadConfigFromFile = async (fileUri, readFile) => {
     throw new Error(`Failed to parse contents of: ${fileUri.fsPath}`);
   }
   return config;
-}
+};
 
 const mergeConfigFiles = async ({
   vscodeFileUri,
   sharedFileUri,
   localFileUri,
   readFile,
-  writeFile
+  writeFile,
 }) => {
   const loadConfigFromFile = module.exports._loadConfigFromFile;
   try {
@@ -36,7 +36,10 @@ const mergeConfigFiles = async ({
 
     const sharedFileContents = sharedFile || {};
     const localFileContents = localFile || {};
-    const vscodeFileContents = await loadConfigFromFile(vscodeFileUri, readFile);
+    const vscodeFileContents = await loadConfigFromFile(
+      vscodeFileUri,
+      readFile
+    );
     const merged = { ...sharedFileContents, ...localFileContents };
 
     // Avoid rewriting the file if there are no changes to be applied
@@ -47,17 +50,19 @@ const mergeConfigFiles = async ({
     log.info(`Updating config in ${vscodeFileUri.fsPath}`);
     await writeFile(
       vscodeFileUri,
-      Buffer.from(JSON.stringify({ ...vscodeFileContents, ...merged}, null, 2)),
+      Buffer.from(
+        JSON.stringify({ ...vscodeFileContents, ...merged }, null, 2)
+      ),
       { create: true, overwrite: true }
     );
   } catch (e) {
     log.error(e.message);
     log.debug(e);
   }
-}
+};
 
 module.exports = {
   mergeConfigFiles,
   // Private, only exported for test mocking
   _loadConfigFromFile,
-}
+};

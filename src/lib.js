@@ -12,13 +12,16 @@ const initializeWorkspaceFolder = ({
   createRelativePattern,
   joinPath,
   readFile,
-  writeFile
+  writeFile,
 }) => {
   workspaceConfigFileNames.forEach(configFile => {
     const workspaceVscodeDirUri = joinPath(folderUri, '.vscode');
     const sharedFile = `${configFile}.shared`;
     const localFile = `${configFile}.local`;
-    const globPattern = createRelativePattern(workspaceVscodeDirUri, `{${localFile},${sharedFile}}.json`);
+    const globPattern = createRelativePattern(
+      workspaceVscodeDirUri,
+      `{${localFile},${sharedFile}}.json`
+    );
     const vscodeFileUri = joinPath(workspaceVscodeDirUri, `${configFile}.json`);
     const sharedFileUri = joinPath(workspaceVscodeDirUri, `${sharedFile}.json`);
     const localFileUri = joinPath(workspaceVscodeDirUri, `${localFile}.json`);
@@ -37,10 +40,10 @@ const initializeWorkspaceFolder = ({
       sharedFileUri,
       localFileUri,
       readFile,
-      writeFile
+      writeFile,
     });
-  })
-}
+  });
+};
 
 const handleWorkspaceFolderUpdates = ({
   added,
@@ -49,36 +52,38 @@ const handleWorkspaceFolderUpdates = ({
   createRelativePattern,
   joinPath,
   readFile,
-  writeFile
+  writeFile,
 }) => {
   if (added && Array.isArray(added)) {
-    added.forEach(f => module.exports.initializeWorkspaceFolder({
-      folderUri: f.uri,
-      createFileSystemWatcher,
-      createRelativePattern,
-      joinPath,
-      readFile,
-      writeFile
-    }));
+    added.forEach(f =>
+      module.exports.initializeWorkspaceFolder({
+        folderUri: f.uri,
+        createFileSystemWatcher,
+        createRelativePattern,
+        joinPath,
+        readFile,
+        writeFile,
+      })
+    );
   }
   if (removed && Array.isArray(removed)) {
     removed.forEach(f => watcher.disposeWorkspaceWatcher(f.uri));
   }
-}
+};
 
 const initializeLog = createOutputChannel => {
   log.initialize(createOutputChannel);
-}
+};
 
 const deactivate = () => {
   log.info('Deactivating and disposing all watchers');
   watcher.disposeAllWatchers();
   log.dispose();
-}
+};
 
 module.exports = {
   deactivate,
   handleWorkspaceFolderUpdates,
   initializeLog,
-  initializeWorkspaceFolder
+  initializeWorkspaceFolder,
 };

@@ -20,7 +20,9 @@ suite('log Suite', () => {
   suite('initialize Suite', () => {
     test('Should create output channel with correct title', () => {
       let actName = '';
-      log.initialize(name => { actName = name })
+      log.initialize(name => {
+        actName = name;
+      });
       assert.deepEqual(actName, 'Workspace Config+');
     });
 
@@ -33,13 +35,13 @@ suite('log Suite', () => {
 
   suite('log levels Suite', () => {
     const msg = 'bar';
-    const localString = '2021-08-15 14:16:52'
+    const localString = '2021-08-15 14:16:52';
     let actLogMessage;
 
     setup(() => {
       log._outputChannel = {
-        appendLine: (m) => actLogMessage = m
-      }
+        appendLine: m => (actLogMessage = m),
+      };
       Sinon.stub(clock.Date.prototype, 'toLocaleString')
         .withArgs('sv')
         .callsFake(() => localString);
@@ -50,7 +52,7 @@ suite('log Suite', () => {
     });
 
     const assertLogMessage = level => {
-      assert.deepEqual(`[${localString}] [${level}] ${msg}`, actLogMessage)
+      assert.deepEqual(`[${localString}] [${level}] ${msg}`, actLogMessage);
     };
 
     test('Warn should set correct log level', () => {
@@ -81,5 +83,5 @@ suite('log Suite', () => {
       log.dispose();
       assert.isTrue(stub.calledOnce);
     });
-  })
-})
+  });
+});

@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 
 const fileHandler = require('./file-handler');
 
@@ -16,7 +16,7 @@ const _registerSharedFileSystemWatcher = (
     fileSystemChangeWatcher.onDidCreate(onFileSystemEventHandler),
     fileSystemChangeWatcher.onDidDelete(onFileSystemEventHandler),
   ];
-}
+};
 
 const generateFileSystemWatcher = ({
   globPattern,
@@ -44,25 +44,30 @@ const generateFileSystemWatcher = ({
         sharedFileUri,
         localFileUri,
         readFile,
-        writeFile
+        writeFile,
       });
     }
-    cache[e] = { prior: current }
+    cache[e] = { prior: current };
   }
-  module.exports._registerSharedFileSystemWatcher(globPattern, createFileSystemWatcher, folderUri, handleFileEvent)
-}
+  module.exports._registerSharedFileSystemWatcher(
+    globPattern,
+    createFileSystemWatcher,
+    folderUri,
+    handleFileEvent
+  );
+};
 
 const disposeWorkspaceWatcher = workspaceUri => {
   if (module.exports._fileSystemWatchers[workspaceUri]) {
-    module.exports._fileSystemWatchers[workspaceUri].forEach(w => w.dispose())
+    module.exports._fileSystemWatchers[workspaceUri].forEach(w => w.dispose());
   }
-}
+};
 
 const disposeAllWatchers = () => {
   Object.values(module.exports._fileSystemWatchers).forEach(watchers => {
     watchers.forEach(w => w.dispose());
   });
-}
+};
 
 module.exports = {
   disposeAllWatchers,
@@ -70,5 +75,5 @@ module.exports = {
   generateFileSystemWatcher,
   // Private, only export for test stubbing
   _fileSystemWatchers,
-  _registerSharedFileSystemWatcher
-}
+  _registerSharedFileSystemWatcher,
+};
