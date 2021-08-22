@@ -1,0 +1,6 @@
+.coverage/
+.testresults/
+.github/
+.vscode/
+node_modules/
+
