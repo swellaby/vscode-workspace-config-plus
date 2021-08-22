@@ -24,10 +24,10 @@ const mergeConfigFiles = async ({
   readFile,
   writeFile
 }) => {
-  const _loadConfigFromFile = module.exports._loadConfigFromFile;
+  const loadConfigFromFile = module.exports._loadConfigFromFile;
   try {
-    const sharedFile = await _loadConfigFromFile(sharedFileUri, readFile);
-    const localFile = await _loadConfigFromFile(localFileUri, readFile);
+    const sharedFile = await loadConfigFromFile(sharedFileUri, readFile);
+    const localFile = await loadConfigFromFile(localFileUri, readFile);
 
     // If neither of these files exists then there's no work to be done
     if (!sharedFile && !localFile) {
@@ -36,7 +36,7 @@ const mergeConfigFiles = async ({
 
     const sharedFileContents = sharedFile || {};
     const localFileContents = localFile || {};
-    const vscodeFileContents = await _loadConfigFromFile(vscodeFileUri, readFile);
+    const vscodeFileContents = await loadConfigFromFile(vscodeFileUri, readFile);
     const merged = { ...sharedFileContents, ...localFileContents };
 
     // Avoid rewriting the file if there are no changes to be applied
