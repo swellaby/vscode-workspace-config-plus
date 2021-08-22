@@ -17,6 +17,10 @@ const _loadConfigFromFile = async (fileUri, readFile) => {
   return config;
 };
 
+// This function does exceed our preferred ceiling for statement counts
+// but worth an override here for readability. However, we should split
+// this up if we end up needing to add anything else to it.
+// eslint-disable-next-line max-statements
 const mergeConfigFiles = async ({
   vscodeFileUri,
   sharedFileUri,
