@@ -24,8 +24,8 @@ suite('watcher Suite', () => {
 
   setup(() => {
     watcher._fileSystemWatchers = {
-      first: [ firstWatcher, secondWatcher ],
-      second: [ thirdWatcher, fourthWatcher ],
+      first: [firstWatcher, secondWatcher],
+      second: [thirdWatcher, fourthWatcher],
     };
     firstWatcherDisposeStub = Sinon.stub(firstWatcher, 'dispose');
     secondWatcherDisposeStub = Sinon.stub(secondWatcher, 'dispose');
@@ -52,18 +52,19 @@ suite('watcher Suite', () => {
       ...callbacks,
       ...uris,
       folderUri,
-      globPattern
+      globPattern,
     };
     let handleFileEvent;
 
     setup(() => {
       clock = Sinon.useFakeTimers();
       clock.tick(initialTime);
-      registerSharedFileSystemWatcherStub = Sinon
-        .stub(watcher, '_registerSharedFileSystemWatcher')
-        .callsFake((_g, _c, _f, cb) => {
-          handleFileEvent = cb;
-        });
+      registerSharedFileSystemWatcherStub = Sinon.stub(
+        watcher,
+        '_registerSharedFileSystemWatcher'
+      ).callsFake((_g, _c, _f, cb) => {
+        handleFileEvent = cb;
+      });
       mergeFilesStub = Sinon.stub(fileHandler, 'mergeConfigFiles');
     });
 
@@ -110,7 +111,7 @@ suite('watcher Suite', () => {
     const fileSystemWatcher = {
       onDidChange: () => null,
       onDidCreate: () => null,
-      onDidDelete: () => null
+      onDidDelete: () => null,
     };
     const vsCodeUri = { uri: 'foo/.vscode' };
     const pattern = { path: '{a,b}.json' };
@@ -120,13 +121,21 @@ suite('watcher Suite', () => {
     const didDelete = false;
 
     setup(() => {
-      createFileSystemWatcherStub = Sinon
-        .stub(callbacks, 'createFileSystemWatcher')
+      createFileSystemWatcherStub = Sinon.stub(
+        callbacks,
+        'createFileSystemWatcher'
+      )
         .withArgs(pattern)
         .callsFake(() => fileSystemWatcher);
-      onDidChangeStub = Sinon.stub(fileSystemWatcher, 'onDidChange').callsFake(() => didChange);
-      onDidCreateStub = Sinon.stub(fileSystemWatcher, 'onDidCreate').callsFake(() => didCreate);
-      onDidDeleteStub = Sinon.stub(fileSystemWatcher, 'onDidDelete').callsFake(() => didDelete);
+      onDidChangeStub = Sinon.stub(fileSystemWatcher, 'onDidChange').callsFake(
+        () => didChange
+      );
+      onDidCreateStub = Sinon.stub(fileSystemWatcher, 'onDidCreate').callsFake(
+        () => didCreate
+      );
+      onDidDeleteStub = Sinon.stub(fileSystemWatcher, 'onDidDelete').callsFake(
+        () => didDelete
+      );
     });
 
     test('Should register the provided uri correctly', () => {
@@ -139,7 +148,7 @@ suite('watcher Suite', () => {
       assert.deepEqual(watcher._fileSystemWatchers[vsCodeUri], [
         didChange,
         didCreate,
-        didDelete
+        didDelete,
       ]);
     });
   });

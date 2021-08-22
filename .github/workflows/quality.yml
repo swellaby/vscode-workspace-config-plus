@@ -38,4 +38,3 @@ jobs:
         with:
           args: >
             -Dsonar.projectVersion=${{ steps.get_version.outputs.PACKAGE_VERSION }}
-
