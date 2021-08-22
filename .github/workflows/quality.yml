@@ -6,7 +6,7 @@ on:
   pull_request:
 
 jobs:
-  build:
+  sonar:
     runs-on: ubuntu-latest
     name: sonar
     if: github.repository == 'swellaby/vscode-workspace-config-plus'
@@ -38,3 +38,22 @@ jobs:
         with:
           args: >
             -Dsonar.projectVersion=${{ steps.get_version.outputs.PACKAGE_VERSION }}
+
+  format:
+    runs-on: ubuntu-latest
+    name: format
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+
+      - name: use Node.js 16
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16
+
+      - name: install dependencies
+        run: npm install
+
+      - name: run formatting check
+        run: npm run format:check
