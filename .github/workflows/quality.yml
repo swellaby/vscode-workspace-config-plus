@@ -57,3 +57,22 @@ jobs:
 
       - name: run formatting check
         run: npm run format:check
+
+  lint:
+    runs-on: ubuntu-latest
+    name: lint
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+
+      - name: use Node.js 16
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16
+
+      - name: install dependencies
+        run: npm install
+
+      - name: run lint check
+        run: npm run lint
