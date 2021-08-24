@@ -1,7 +1,9 @@
 {
   "name": "vscode-workspace-config-plus",
-  "private": true,
   "version": "0.1.0",
+  "preview": true,
+  "private": true,
+  "publisher": "Swellaby",
   "description": "VS Code extension for improved workspace configuration",
   "main": "src/index.js",
   "engines": {
@@ -10,15 +12,24 @@
   },
   "scripts": {
     "build": "npm test",
-    "clean": "rimraf .testresults .coverage",
+    "clean": "rimraf .testresults .coverage .vsix",
     "coverage": "npm run coverage:unit",
     "coverage:unit": "c8 -c tests/unit/.c8rc.json npm run test:unit",
+    "test": "npm run test:unit",
+    "test:unit": "mocha --config tests/unit/.mocharc.yml",
     "format:fix": "prettier --write \"**/*.@(js|md|json|yml)\"",
     "format:check": "prettier --check \"**/*.@(js|md|json|yml)\"",
     "lint": "eslint **/*.js",
     "lint:fix": "eslint --fix **/*.js",
-    "test": "npm run test:unit",
-    "test:unit": "mocha --config tests/unit/.mocharc.yml"
+    "prepackage:vsix": "mkdirp .vsix",
+    "package:vsix": "vsce package -o .vsix/$npm_package_name-$npm_package_version.vsix",
+    "prepackage:vsix:windows": "mkdirp .vsix",
+    "package:vsix:windows": "vsce package -o .vsix/%npm_package_name%-%npm_package_version%.vsix",
+    "publish:vsix": "vsce publish --packagePath .vsix/$npm_package_name-$npm_package_version.vsix",
+    "publish:vsix:windows": "vsce publish --packagePath .vsix/%npm_package_name%-%npm_package_version%.vsix",
+    "publish:ext": "vsce publish patch",
+    "vsce:login": "vsce login swellaby",
+    "vsce": "vsce"
   },
   "author": {
     "email": "opensource@swellaby.com",
@@ -32,6 +43,10 @@
       "url": "https://github.com/calebcartwright"
     }
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/swellaby/vscode-workspace-config-plus.git"
+  },
   "license": "MIT",
   "activationEvents": [
     "onStartupFinished"
@@ -46,7 +61,8 @@
     "mocha-sonarqube-reporter": "^1.0.2",
     "prettier": "^2.3.2",
     "rimraf": "^3.0.2",
-    "sinon": "^11.1.2"
+    "sinon": "^11.1.2",
+    "vsce": "^1.96.1"
   },
   "dependencies": {
     "jsonc-parser": "^3.0.0"
