@@ -3,7 +3,7 @@
 Provides additional capabilities to manage your workspace configuration, including the ability to utilize `shared` and `local` versions of the VS Code workspace configuration files.
 
 ***************************************
-**Functional, but still in a Beta !!!!**  
+**Functional, but still in Beta !!!!**  
 ***************************************
 
 [![Version Badge][version-badge]][ext-url]
@@ -25,7 +25,7 @@ Provides additional capabilities to manage your workspace configuration, includi
 
 ### Shared and Local Configuration Files
 
-With this extension you can now differentiate between shared configurations that can be checked into version control and shared with other team members, as well as local configuration not in version control which can extend (or override) the shared configuration.
+With this extension you can now split your project's workspace configuration between shared files that can be checked into version control and shared with other team members, as well as local configuration overrides/extension that are excluded from version control.
 
 It currently supports:
 
@@ -33,7 +33,9 @@ It currently supports:
 * `tasks.json` - (`tasks.shared.json`, `tasks.local.json`)
 * `launch.json` - (`launch.shared.json`, `launch.local.json`)
 
-Be sure your `*.local.json` files and the main VS Code files are exclude from version control by adding the corresponding entries to your projects ignore file (e.g. `.gitignore`, `.hgignore`). For example:
+#### Setup
+
+Be sure your `*.local.json` files and the main VS Code files are excluded from version control by adding the corresponding entries to your project's ignore file (e.g. `.gitignore`, `.hgignore`). For example:
 
 ```
 # .gitignore
@@ -41,13 +43,38 @@ Be sure your `*.local.json` files and the main VS Code files are exclude from ve
 .vscode/settings.local.json
 ```
 
+Then just add your desired `*.shared.json` and/or `*.local.json` files to your `.vscode` directory in your workspace. Enter the values that you want to share with other contributors into the `*.shared.json` file, and any personal/local overrides and additional settings to the corresponding `*.local.json` file. The configuration values defined in a `*.local.json` file will take precedence over any conflicting values defined in the corresponding `*.shared.json` file.
+
+The extension will re-evaluate and, if necessary, automatically apply any configuration updates any time any supported `*.shared.json` or `*.local.json` files are added, modified, or removed, so there's no need to run any commands.
+
+Team members and contributors that want to take advantage of the shared configuration defined in the `*.shared.json` files just needs to have this extension installed and enabled. Any contributor that doesn't want to pull in any of the project's shared configuration can either not install or disable this extension, or they can create a corresponding `*.local.json` file to override the shared settings.
+
+
+#### Limitations
+
+All configuration setting values are ultimately stored and persisted in the native VS Code workspace configuration files (e.g. `.vscode/settings.json`), but because these features are added via an extension there are some associated limitations and accordingly we'd strongly advise against manually modifying those native files.
+
+* In-file comments are supported in the `*.local.json` and `*.shared.json` files, but any comments from those files are not copied into the native VS Code configuration file.
+* Any comments added to the native VS Code configuration file (e.g. `settings.json`) will be lost when any configuration updates are applied based on changes to the local/shared files.
+    * Some other extensions may automatically add configuration values to the native files with comments, so we'd advise moving any such configuration values to the corresponding `*.local.json` or `*.shared.json` file if you'd like to maintain the comments.
+* This extension only works with the workspace configuration files, and doesn't allow for configuration values to be edited in the [VS Code Settings Editor][vscode-settings-editor-docs] interface.
+* We've tested and validated the extension with both single and [multi-root workspace][vscode-multiroot-docs] projects. We have _not_ had a chance to test with [VS Code Remote SSH]vscode-ssh-docs] based workspaces, nor browser-based workspaces like [GitHub Codespaces][github-codespaces-docs]. We don't necessarily expect any particular issues in those types of projects, but just haven't been able to test and validate (if you do, and want to test, please let us know!)
+* Our understanding is that you will not be able to sync your `*.local.json` files if you are a user of the native [VS Code Settings Sync][vscode-settings-sync] feature. However, the [Settings Sync Extension][settings-sync-ext] may support synchronizing the `*.local.json` configuration files too.
+
+[vscode-settings-editor-docs]: https://code.visualstudio.com/docs/getstarted/settings#_settings-editor
+[vscode-multiroot-docs]: https://code.visualstudio.com/docs/editor/multi-root-workspaces
+[vscode-ssh-docs]: https://code.visualstudio.com/docs/remote/ssh
+[github-codespaces-docs]: https://github.com/features/codespaces
+[vscode-settings-sync]: https://code.visualstudio.com/docs/editor/settings-sync
+[settings-sync-ext]: https://marketplace.visualstudio.com/items?itemName=Shan.code-settings-sync
+
 #### Background
 
-VS Code is highly configurable, and allows you to [configure specific workspaces in addition to your global user settings.]([vscode-settings-docs]). This includes things like general settings, such as the zoom level, as well as [tasks and launch configurations] amongst others. These configurations are stored in various respective files within the `.vscode` directory in the workspace. For example, the workspace task configuration is stored in `.vscode/tasks.json`.
+VS Code is highly configurable, and allows you to [configure specific workspaces in addition to your global user settings.]([vscode-settings-docs]). This includes things like general settings, such as the zoom level, as well as [tasks and launch configurations] amongst others. These configurations are stored in various respective files within the `.vscode` directory in the workspace. For example, the workspace task configuration is stored in `.vscode/tasks.json`.  
 
-This works fantastically, but unfortunately often poses a challenging question for teams or projects that have more than one author since they have to determine whether or not to track the configuration file(s) in version control. If they include the files in version control then they'll often run into conflicting opinions or even conflicting settings, such as those from extensions which are specific to the developers local file system. However, if they exclude the files from version control then they give up the ability to share elements that are helpful for other developers and force contributors to manually duplicate part of their setup.
+This works fantastically, but unfortunately often poses a challenging question for teams or projects that have more than one author since they have to determine whether or not to track the configuration file(s) in version control. If they include the files in version control then they'll often run into conflicting opinions or even conflicting settings, such as those from extensions which are specific to the developer's local file system. However, if they exclude the files from version control then they give up the ability to share elements that are helpful for other developers and force contributors to manually duplicate part of their setup.  
 
-There are some longstanding requests from the VS Code community ([microsoft/vscode#40233][vscode-github-issue-40233], [microsoft/vscode#37519][vscode-github-issue-37519], [microsoft/vscode#15909][vscode-github-issue-15909]) to extend the product to address these concerns, and we hope to see a resolution natively within VS Code one day. This extension should help fill the gap in the interim however.
+There are some longstanding requests from the VS Code community ([microsoft/vscode#40233][vscode-github-issue-40233], [microsoft/vscode#37519][vscode-github-issue-37519], [microsoft/vscode#15909][vscode-github-issue-15909]) to extend the product to address these concerns, and we hope to see a resolution natively within VS Code some day. This extension should help fill the gap in the interim however.  
 
 [vscode-settings-docs]: https://code.visualstudio.com/docs/getstarted/settings
 [tasks-launch-docs]: https://code.visualstudio.com/docs/editor/workspaces#_workspace-tasks-and-launch-configurations
@@ -56,10 +83,13 @@ There are some longstanding requests from the VS Code community ([microsoft/vsco
 [vscode-github-issue-15909]: https://github.com/microsoft/vscode/issues/15909
 
 ## Contributing
+All contributions are welcomed and appreciated! See the [Contributing guide](./CONTRIBUTING.md) for more information.
 
 ## License
+MIT - see license details [here][license-url] 
 
 ## Code of Conduct
+This project follows the standard [Code of Conduct](https://github.com/swellaby/.github/blob/master/CODE_OF_CONDUCT.md) as other Swellaby projects, which is the [Contributor Covenant](https://www.contributor-covenant.org/)
 
 [installs-badge]: https://img.shields.io/vscode-marketplace/i/swellaby.vscode-workspace-config-plus?style=flat-square&label=installs
 [version-badge]: https://img.shields.io/vscode-marketplace/v/swellaby.vscode-workspace-config-plus?style=flat-square&label=version
