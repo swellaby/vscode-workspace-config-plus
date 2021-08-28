@@ -1,0 +1,13 @@
+.coverage/
+.github/
+.testresults/
+.vscode/
+.vsix/
+.editorconfig
+.eslintignore
+.eslintrc.js
+.prettierignore
+.prettierrc.yml
+sonar-project.properties
+
+tests/

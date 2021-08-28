@@ -1,14 +1,63 @@
 {
-  "name": "vscode-workspace-config-plus",
+  "name": "workspace-config-plus",
+  "description": "VS Code extension for improved workspace configuration",
+  "main": "src/index.js",
   "version": "0.1.0",
+  "license": "MIT",
   "preview": true,
   "private": true,
   "publisher": "Swellaby",
-  "description": "VS Code extension for improved workspace configuration",
-  "main": "src/index.js",
+  "icon": "img/icon.png",
+  "galleryBanner": {
+    "color": "#18bc9c",
+    "theme": "dark"
+  },
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "keywords": [
+    "local settings",
+    "shared settings",
+    "shared",
+    "local",
+    "configuration",
+    "workspace configuration"
+  ],
   "engines": {
     "node": ">=12",
     "vscode": "^1.59.0"
+  },
+  "author": {
+    "email": "opensource@swellaby.com",
+    "name": "Swellaby",
+    "url": "https://swellaby.com"
+  },
+  "contributors": [
+    {
+      "email": "opensource@swellaby.com",
+      "name": "Caleb Cartwright",
+      "url": "https://github.com/calebcartwright"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/swellaby/vscode-workspace-config-plus.git"
+  },
+  "devDependencies": {
+    "@swellaby/eslint-config": "^2.0.0",
+    "c8": "^7.8.0",
+    "chai": "^4.3.4",
+    "eslint": "^7.32.0",
+    "mocha": "^9.0.3",
+    "mocha-multi-reporters": "^1.5.1",
+    "mocha-sonarqube-reporter": "^1.0.2",
+    "prettier": "^2.3.2",
+    "rimraf": "^3.0.2",
+    "sinon": "^11.1.2",
+    "vsce": "^1.96.1"
+  },
+  "dependencies": {
+    "jsonc-parser": "^3.0.0"
   },
   "scripts": {
     "build": "npm test",
@@ -30,41 +79,5 @@
     "publish:ext": "vsce publish patch",
     "vsce:login": "vsce login swellaby",
     "vsce": "vsce"
-  },
-  "author": {
-    "email": "opensource@swellaby.com",
-    "name": "Swellaby",
-    "url": "https://swellaby.com"
-  },
-  "contributors": [
-    {
-      "email": "opensource@swellaby.com",
-      "name": "Caleb Cartwright",
-      "url": "https://github.com/calebcartwright"
-    }
-  ],
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/swellaby/vscode-workspace-config-plus.git"
-  },
-  "license": "MIT",
-  "activationEvents": [
-    "onStartupFinished"
-  ],
-  "devDependencies": {
-    "@swellaby/eslint-config": "^2.0.0",
-    "c8": "^7.8.0",
-    "chai": "^4.3.4",
-    "eslint": "^7.32.0",
-    "mocha": "^9.0.3",
-    "mocha-multi-reporters": "^1.5.1",
-    "mocha-sonarqube-reporter": "^1.0.2",
-    "prettier": "^2.3.2",
-    "rimraf": "^3.0.2",
-    "sinon": "^11.1.2",
-    "vsce": "^1.96.1"
-  },
-  "dependencies": {
-    "jsonc-parser": "^3.0.0"
   }
 }
