@@ -45,11 +45,15 @@ Be sure your `*.local.json` files and the main VS Code files are excluded from v
 .vscode/settings.local.json
 ```
 
-Then just add your desired `*.shared.json` and/or `*.local.json` files to your `.vscode` directory in your workspace. Enter the values that you want to share with other contributors into the `*.shared.json` file, and any personal/local overrides and additional settings to the corresponding `*.local.json` file. The configuration values defined in a `*.local.json` file will take precedence over any conflicting values defined in the corresponding `*.shared.json` file.
+Then just add your desired `*.shared.json` and/or `*.local.json` files to your `.vscode` directory in your workspace folder(s). The extension works with both standard (single root) workspace projects and [multi root workspaces][multi-root-workspace-docs].
 
-The extension will re-evaluate and, if necessary, automatically apply any configuration updates any time any supported `*.shared.json` or `*.local.json` files are added, modified, or removed, so there's no need to run any commands.
+Enter the values that you want to share with other contributors into the `*.shared.json` file, and any personal/local overrides and additional settings to the corresponding `*.local.json` file. The configuration values defined in a `*.local.json` file will take precedence over any conflicting values defined in the corresponding `*.shared.json` file.
+
+The extension will re-evaluate and, if necessary, automatically apply any configuration updates any time any supported `*.shared.json` or `*.local.json` files are added, modified, or removed, as well as when additional folders are added to a workspace. As such you never have to worry about running any commands! 
 
 Team members and contributors that want to take advantage of the shared configuration defined in the `*.shared.json` files just needs to have this extension installed and enabled. Any contributor that doesn't want to pull in any of the project's shared configuration can either not install or disable this extension, or they can create a corresponding `*.local.json` file to override the shared settings.
+
+[multi-root-workspace-docs]: https://code.visualstudio.com/docs/editor/multi-root-workspaces
 
 #### Limitations
 
