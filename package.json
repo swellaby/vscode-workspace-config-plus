@@ -27,6 +27,14 @@
     "node": ">=12",
     "vscode": "^1.59.0"
   },
+  "homepage": "https://github.com/swellaby/vscode-workspace-config-plus",
+  "bugs": {
+    "url": "https://github.com/swellaby/vscode-workspace-config-plus"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/swellaby/vscode-workspace-config-plus.git"
+  },
   "author": {
     "email": "opensource@swellaby.com",
     "name": "Swellaby",
@@ -39,10 +47,6 @@
       "url": "https://github.com/calebcartwright"
     }
   ],
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/swellaby/vscode-workspace-config-plus.git"
-  },
   "devDependencies": {
     "@swellaby/eslint-config": "^2.0.0",
     "c8": "^7.8.0",
