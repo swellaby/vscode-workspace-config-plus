@@ -11,6 +11,9 @@ jobs:
     runs-on: windows-latest
     name: prep
 
+    outputs:
+      version: ${{ steps.package.outputs.version }}
+
     steps:
       - name: checkout
         uses: actions/checkout@v2
@@ -22,6 +25,13 @@ jobs:
 
       - name: install dependencies
         run: npm install
+
+      - name: create vsix
+        id: package
+        shell: bash
+        run: |
+          npm run package:vsix -- patch -m "chore: bump version [skip ci]"
+          echo ::set-output name=version::$(node -e "console.log(require('./package.json').version);")
 
       - name: archive workspace
         shell: bash
@@ -125,6 +135,7 @@ jobs:
 
   sonar:
     runs-on: ubuntu-latest
+    needs: prep
     name: cd-sonar
 
     steps:
@@ -147,10 +158,6 @@ jobs:
       - name: run build script
         run: npm run coverage
 
-      - name: get current package version
-        id: get_version
-        run: echo ::set-output name=PACKAGE_VERSION::$(node -e "console.log(require('./package.json').version);")
-
       - name: SonarCloud Scan
         uses: sonarsource/sonarcloud-github-action@master
         env:
@@ -158,5 +165,5 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
           args: >
-            -Dsonar.projectVersion=${{ steps.get_version.outputs.PACKAGE_VERSION }}
+            -Dsonar.projectVersion=${{ needs.prep.outputs.version }}
 
