@@ -171,7 +171,8 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     name: cd-publish
-    needs: [lint, format, sonar, unit-tests]
+    # be sure to keep dependency on `prep` to maintain access to the output variable
+    needs: [prep, lint, format, sonar, unit-tests]
     environment: publish
 
     steps:
@@ -191,12 +192,12 @@ jobs:
           npm run publish:vsix -- -p ${{ secrets.VSCE_PAT }}
           git \
             -c http.extraheader="AUTHORIZATION: basic ${{ secrets.GITHUB_TOKEN }}" \
-            push --atomic origin main v${{needs.prep.outputs.version}}
+            push --atomic origin main v${{ needs.prep.outputs.version }}
 
       - name: create GitHub Release
         uses: ncipollo/release-action@v1
         with:
           artifacts: .vsix/*.vsix
           prerelease: true
-          tag: v${{needs.prep.outputs.version}}
+          tag: v${{ needs.prep.outputs.version }}
           token: ${{ secrets.GITHUB_TOKEN }}
