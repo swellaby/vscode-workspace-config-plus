@@ -190,6 +190,8 @@ jobs:
       - name: push artifacts
         run: |
           npm run publish:vsix -- -p ${{ secrets.VSCE_PAT }}
+          git config user.name swellbot
+          git config user.email opensource@swellaby.com
           git \
             -c http.extraheader="AUTHORIZATION: basic ${{ secrets.GITHUB_TOKEN }}" \
             push --atomic origin main v${{ needs.prep.outputs.version }}
