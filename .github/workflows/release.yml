@@ -171,7 +171,7 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     name: cd-publish
-    needs: [ lint, format, sonar, unit-tests ]
+    needs: [lint, format, sonar, unit-tests]
     environment: publish
 
     steps:
@@ -195,8 +195,7 @@ jobs:
       - name: create GitHub Release
         uses: ncipollo/release-action@v1
         with:
-          artifacts: ".vsix/*.vsix"
+          artifacts: '.vsix/*.vsix'
           prerelease: true
           tag: v${{needs.cd-prep.outputs.version}}
           token: ${{ secrets.GITHUB_TOKEN }}
-
