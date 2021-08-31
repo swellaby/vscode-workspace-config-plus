@@ -184,6 +184,7 @@ jobs:
         run: |
           tar -xzf ./workspace.tar.gz
           ls -la
+          ls -la .vsix
 
       - name: push artifacts
         run: |
