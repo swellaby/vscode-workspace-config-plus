@@ -3,13 +3,12 @@ on:
   push:
     branches:
       - main
-  pull_request:
 
 jobs:
   prep:
     ## To ensure Windows and non-Windows binaries are obtained
     runs-on: windows-latest
-    name: prep
+    name: cd-prep
 
     outputs:
       version: ${{ steps.package.outputs.version }}
@@ -48,7 +47,7 @@ jobs:
           path: ./workspace.tar.gz
 
   unit-tests:
-    needs: prep
+    needs: cd-prep
     runs-on: ${{ matrix.runner }}-latest
     name: cd-${{ matrix.os }}-unit-tests-node-v${{ matrix.node-version }}
 
@@ -86,7 +85,7 @@ jobs:
         run: npm test
 
   lint:
-    needs: prep
+    needs: cd-prep
     runs-on: ubuntu-latest
     name: cd-lint
 
@@ -101,7 +100,6 @@ jobs:
         run: |
           tar  -xzf ./workspace.tar.gz
           ls -la
-          ls -la .vsix
 
       - name: use Node.js 16
         uses: actions/setup-node@v2
@@ -112,7 +110,7 @@ jobs:
         run: npm run lint
 
   format:
-    needs: prep
+    needs: cd-prep
     runs-on: ubuntu-latest
     name: cd-format
 
@@ -138,7 +136,7 @@ jobs:
 
   sonar:
     runs-on: ubuntu-latest
-    needs: prep
+    needs: cd-prep
     name: cd-sonar
 
     steps:
@@ -168,4 +166,37 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
           args: >
-            -Dsonar.projectVersion=${{ needs.prep.outputs.version }}
+            -Dsonar.projectVersion=${{ needs.cd-prep.outputs.version }}
+
+  publish:
+    runs-on: ubuntu-latest
+    name: cd-publish
+    needs: [ lint, format, sonar, unit-tests ]
+    environment: publish
+
+    steps:
+      - name: download workspace
+        uses: actions/download-artifact@v2
+        with:
+          name: workspace
+
+      - name: extract workspace archive
+        run: |
+          tar -xzf ./workspace.tar.gz
+          ls -la
+
+      - name: push artifacts
+        run: |
+          npm run publish:vsix -- -p ${{ secrets.VSCE_PAT }}
+          git \
+            -c http.extraheader="AUTHORIZATION: basic ${{ secrets.GITHUB_TOKEN }}" \
+            push --atomic origin main v${{needs.cd-prep.outputs.version}}
+
+      - name: create GitHub Release
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: ".vsix/*.vsix"
+          prerelease: true
+          tag: v${{needs.cd-prep.outputs.version}}
+          token: ${{ secrets.GITHUB_TOKEN }}
+
