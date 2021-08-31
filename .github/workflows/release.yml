@@ -1,0 +1,87 @@
+name: quality-ci
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  prep:
+    ## To ensureWindows and non-Windows binaries are obtained
+    runs-on: windows-latest
+    name: prep
+
+    steps:
+      - name: use Node.js 16
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16
+
+      - name: install dependencies
+        run: npm install
+
+      - name: archive workspace
+        shell: bash
+        run: tar czf "workspace.tar.gz" .
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: workspace
+          path: ./workspace.tar.gz
+
+  unit-tests:
+    needs: prep
+    runs-on: ${{ matrix.runner }}-latest
+    name: cd-${{ matrix.os }}-unit-tests-node-v${{ matrix.node-version }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [12, 14, 15, 16]
+        os: [ linux, mac, windows ]
+        include:
+          - os: linux
+            runner: ubuntu
+          - os: windows
+            runner: windows
+          - os: mac
+            runner: macos
+
+
+    steps:
+      - name: download workspace
+        uses: actions/download-artifact@v2
+        with:
+          name: workspace
+
+      - name: extract workspace archive
+        shell: bash
+        run: tar -xzf ./workspace.tar.gz
+
+      - name: use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        if: ${{ needs.changes.outputs.impactful == 'true' }}
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: run unit tests
+        run: npm test
+
+  # lint:
+  #   runs-on: ubuntu-latest
+  #   name: lint
+
+  #   steps:
+  #     - name: checkout
+  #       uses: actions/checkout@v2
+
+  #     - name: use Node.js 16
+  #       uses: actions/setup-node@v2
+  #       with:
+  #         node-version: 16
+
+  #     - name: install dependencies
+  #       run: npm install
+
+  #     - name: run lint check
+  #       run: npm run lint
