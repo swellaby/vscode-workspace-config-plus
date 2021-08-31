@@ -1,4 +1,4 @@
-name: quality-ci
+name: release
 on:
   push:
     branches:
@@ -12,6 +12,9 @@ jobs:
     name: prep
 
     steps:
+      - name: checkout
+        uses: actions/checkout@v2
+
       - name: use Node.js 16
         uses: actions/setup-node@v2
         with:
