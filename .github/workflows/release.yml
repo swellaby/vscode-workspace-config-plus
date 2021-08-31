@@ -7,7 +7,7 @@ on:
 
 jobs:
   prep:
-    ## To ensureWindows and non-Windows binaries are obtained
+    ## To ensure Windows and non-Windows binaries are obtained
     runs-on: windows-latest
     name: prep
 
@@ -25,7 +25,10 @@ jobs:
 
       - name: archive workspace
         shell: bash
-        run: tar czf "workspace.tar.gz" .
+        run: |
+          mkdir -p ../staging
+          cp -ar ./. ../staging/
+          tar -C ../staging -czf workspace.tar.gz .
 
       - uses: actions/upload-artifact@v2
         with:
@@ -50,6 +53,30 @@ jobs:
           - os: mac
             runner: macos
 
+    steps:
+      - name: download workspace
+        uses: actions/download-artifact@v2
+        with:
+          name: workspace
+
+      - name: extract workspace archive
+        shell: bash
+        run: |
+          tar  -xzf ./workspace.tar.gz
+          ls -la
+
+      - name: use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: run unit tests
+        run: npm test
+
+  lint:
+    needs: prep
+    runs-on: ubuntu-latest
+    name: cd-lint
 
     steps:
       - name: download workspace
@@ -59,32 +86,77 @@ jobs:
 
       - name: extract workspace archive
         shell: bash
-        run: tar -xzf ./workspace.tar.gz
-
-      - name: use Node.js ${{ matrix.node-version }}
+        run: |
+          tar  -xzf ./workspace.tar.gz
+          ls -la
+      - name: use Node.js 16
         uses: actions/setup-node@v2
-        if: ${{ needs.changes.outputs.impactful == 'true' }}
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 16
 
-      - name: run unit tests
-        run: npm test
+      - name: run lint check
+        run: npm run lint
 
-  # lint:
-  #   runs-on: ubuntu-latest
-  #   name: lint
 
-  #   steps:
-  #     - name: checkout
-  #       uses: actions/checkout@v2
+  format:
+    needs: prep
+    runs-on: ubuntu-latest
+    name: cd-format
 
-  #     - name: use Node.js 16
-  #       uses: actions/setup-node@v2
-  #       with:
-  #         node-version: 16
+    steps:
+      - name: download workspace
+        uses: actions/download-artifact@v2
+        with:
+          name: workspace
 
-  #     - name: install dependencies
-  #       run: npm install
+      - name: extract workspace archive
+        shell: bash
+        run: |
+          tar  -xzf ./workspace.tar.gz
+          ls -la
 
-  #     - name: run lint check
-  #       run: npm run lint
+      - name: use Node.js 16
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16
+
+      - name: run formatting check
+        run: npm run format:check
+
+  sonar:
+    runs-on: ubuntu-latest
+    name: cd-sonar
+
+    steps:
+      - name: download workspace
+        uses: actions/download-artifact@v2
+        with:
+          name: workspace
+
+      - name: extract workspace archive
+        shell: bash
+        run: |
+          tar  -xzf ./workspace.tar.gz
+          ls -la
+
+      - name: use Node.js 16
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16
+
+      - name: run build script
+        run: npm run coverage
+
+      - name: get current package version
+        id: get_version
+        run: echo ::set-output name=PACKAGE_VERSION::$(node -e "console.log(require('./package.json').version);")
+
+      - name: SonarCloud Scan
+        uses: sonarsource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          args: >
+            -Dsonar.projectVersion=${{ steps.get_version.outputs.PACKAGE_VERSION }}
+
