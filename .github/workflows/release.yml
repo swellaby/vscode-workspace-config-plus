@@ -193,7 +193,7 @@ jobs:
           git config user.name swellbot
           git config user.email opensource@swellaby.com
           git status
-          git remote set-url origin 'https://swellbot:${{ secrets.GH_PASS }}@github.com/swellaby/vscode-workspace-config-plus.git'
+          git remote set-url origin 'https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/swellaby/vscode-workspace-config-plus.git'
           git \
             -c http.extraheader="AUTHORIZATION: basic ${{ secrets.GH_TOKEN }}" \
             push --atomic origin main v${{ needs.prep.outputs.version }}
