@@ -6,7 +6,6 @@ on:
 
 permissions:
 
-
 jobs:
   prep:
     ## To ensure Windows and non-Windows binaries are obtained
