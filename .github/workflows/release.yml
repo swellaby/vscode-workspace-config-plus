@@ -194,7 +194,7 @@ jobs:
           git config user.email opensource@swellaby.com
           git status
           git \
-            -c http.extraheader="AUTHORIZATION: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            -c http.extraheader="AUTHORIZATION: basic ${{ secrets.GH_TOKEN }}" \
             push --atomic origin main v${{ needs.prep.outputs.version }}
 
       - name: create GitHub Release
