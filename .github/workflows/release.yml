@@ -29,8 +29,8 @@ jobs:
         id: package
         shell: bash
         run: |
-          git config user.name github-actions
-          git config user.email github-actions@github.com
+          git config user.name swellbot
+          git config user.email opensource@swellaby.com
           npm run package:vsix -- patch -m "chore: bump version [skip ci]"
           echo ::set-output name=version::$(node -e "console.log(require('./package.json').version);")
 
@@ -190,12 +190,11 @@ jobs:
       - name: push artifacts
         run: |
           npm run publish:vsix -- -p ${{ secrets.VSCE_PAT }}
-          git config user.name github-actions
-          git config user.email github-actions@github.com
+          git config user.name swellbot
+          git config user.email opensource@swellaby.com
           git status
-          git remote set-url origin 'https://${{ env.GITHUB_ACTOR }}:${{ secrets.GITHUB_TOKEN }}@github.com/swellaby/vscode-workspace-config-plus.git'
-          git \
-            push --atomic origin main v${{ needs.prep.outputs.version }}
+          git remote set-url origin https://swellbot:${{ secrets.GH_TOKEN }}@github.com/swellaby/vscode-workspace-config-plus.git
+          git push --atomic origin main v${{ needs.prep.outputs.version }}
 
       - name: create GitHub Release
         uses: ncipollo/release-action@v1
