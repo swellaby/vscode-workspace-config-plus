@@ -194,7 +194,7 @@ jobs:
           git config user.email opensource@swellaby.com
           git status
           git remote set-url origin https://swellbot:${{ secrets.GH_TOKEN }}@github.com/swellaby/vscode-workspace-config-plus
-          git push --atomic origin main v${{ needs.prep.outputs.version }}
+          git push --verbose --atomic origin main v${{ needs.prep.outputs.version }}
 
       - name: create GitHub Release
         uses: ncipollo/release-action@v1
