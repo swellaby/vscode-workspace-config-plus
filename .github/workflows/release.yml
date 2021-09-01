@@ -191,8 +191,6 @@ jobs:
         run: |
           npm run publish:vsix -- -p ${{ secrets.VSCE_PAT }}
           git config --unset-all credential.helper
-          git config --global --unset-all credential.helper
-          git config --system --unset-all credential.helper
           git config user.name swellbot
           git config user.email opensource@swellaby.com
           git status
