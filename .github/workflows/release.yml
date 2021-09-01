@@ -193,9 +193,8 @@ jobs:
           git config user.name swellbot
           git config user.email opensource@swellaby.com
           git status
-          git config --list
           git \
-            -c http.extraheader="AUTHORIZATION: basic ${{ secrets.GH_TOKEN }}" \
+            -c http.extraheader="AUTHORIZATION: Bearer ${{ secrets.GITHUB_TOKEN }}" \
             push --atomic origin main v${{ needs.prep.outputs.version }}
 
       - name: create GitHub Release
@@ -204,4 +203,4 @@ jobs:
           artifacts: .vsix/*.vsix
           prerelease: true
           tag: v${{ needs.prep.outputs.version }}
-          token: ${{ secrets.GH_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
