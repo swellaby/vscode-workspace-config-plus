@@ -190,11 +190,10 @@ jobs:
       - name: push artifacts
         run: |
           npm run publish:vsix -- -p ${{ secrets.VSCE_PAT }}
-          git config --unset-all credential.helper
           git config user.name swellbot
           git config user.email opensource@swellaby.com
           git status
-          git remote set-url origin https://swellbot:${{ secrets.GH_TOKEN }}@github.com/swellaby/vscode-workspace-config-plus
+          git remote set-url origin https://swellbot:${{ secrets.GH_PASS }}@github.com/swellaby/vscode-workspace-config-plus
           git push --verbose --atomic origin main v${{ needs.prep.outputs.version }}
 
       - name: create GitHub Release
