@@ -29,6 +29,7 @@ jobs:
         id: package
         shell: bash
         run: |
+          git checkout main
           git config user.name swellbot
           git config user.email opensource@swellaby.com
           npm run package:vsix -- patch -m "chore: bump version [skip ci]"
