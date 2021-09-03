@@ -16,6 +16,9 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+
 
       - name: use Node.js 16
         uses: actions/setup-node@v2
@@ -190,12 +193,13 @@ jobs:
 
       - name: push artifacts
         run: |
-          npm run publish:vsix -- -p ${{ secrets.VSCE_PAT }}
           git config user.name swellbot
           git config user.email opensource@swellaby.com
           git status
+          git checkout main
           git remote set-url origin https://swellbot:${{ secrets.GH_TOKEN }}@github.com/swellaby/vscode-workspace-config-plus
           git push --atomic origin main v${{ needs.prep.outputs.version }}
+          npm run publish:vsix -- -p ${{ secrets.VSCE_PAT }}
 
       - name: create GitHub Release
         uses: ncipollo/release-action@v1
