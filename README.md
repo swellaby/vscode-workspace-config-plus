@@ -112,10 +112,10 @@ MIT - see license details [here][license-url]
 
 This project follows the standard [Code of Conduct](https://github.com/swellaby/.github/blob/master/CODE_OF_CONDUCT.md) as other Swellaby projects, which is the [Contributor Covenant](https://www.contributor-covenant.org/)
 
-[installs-badge]: https://img.shields.io/vscode-marketplace/i/swellaby.vscode-workspace-config-plus?style=flat-square&label=installs
-[version-badge]: https://img.shields.io/vscode-marketplace/v/swellaby.vscode-workspace-config-plus?style=flat-square&label=version
-[rating-badge]: https://img.shields.io/vscode-marketplace/r/swellaby.vscode-workspace-config-plus?style=flat-square
-[ext-url]: https://marketplace.visualstudio.com/items?itemName=swellaby.vscode-workspace-config-plus
+[installs-badge]: https://img.shields.io/vscode-marketplace/i/swellaby.workspace-config-plus?style=flat-square&label=installs
+[version-badge]: https://img.shields.io/vscode-marketplace/v/swellaby.workspace-config-plus?style=flat-square&label=version
+[rating-badge]: https://img.shields.io/vscode-marketplace/r/swellaby.workspace-config-plus?style=flat-square
+[ext-url]: https://marketplace.visualstudio.com/items?itemName=swellaby.workspace-config-plus
 [license-url]: https://github.com/swellaby/vscode-workspace-config-plus/blob/main/LICENSE
 [license-badge]: https://img.shields.io/github/license/swellaby/vscode-workspace-config-plus?style=flat-square&color=blue
 [linux-ci-badge]: https://img.shields.io/github/workflow/status/swellaby/vscode-workspace-config-plus/linux-ci/main?label=linux%20build&style=flat-square
