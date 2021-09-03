@@ -2,7 +2,7 @@
   "name": "workspace-config-plus",
   "description": "VS Code extension for improved workspace configuration",
   "main": "src/index.js",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "license": "MIT",
   "preview": true,
   "private": true,
