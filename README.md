@@ -93,7 +93,7 @@ There are some longstanding requests from the VS Code community ([microsoft/vsco
 
 Found a bug, have an idea for a new feature, or a question? Please reach out to us on the [project GitHub repository][github-repo-url] by opening an Issue or starting a Discussion!
 
-Like this extension? Please consider starring the repo on GitHub! ![][stars-badge].
+Like this extension? Please consider starring the repo on GitHub! ![][stars-badge]
 
 You can also share feedback by rating the extension and/or leaving a [review][marketplace-reviews-url] on the Marketplace.
 
