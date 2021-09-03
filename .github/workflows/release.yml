@@ -196,9 +196,9 @@ jobs:
           git config user.email opensource@swellaby.com
           git status
           git checkout main
-          git push \
+          git \
             -c http.extraheader="AUTHORIZATION: basic ${{ secrets.GH_TOKEN }}" \
-            --atomic origin main v${{ needs.prep.outputs.version }}
+            push --atomic origin main v${{ needs.prep.outputs.version }}
           npm run publish:vsix -- -p ${{ secrets.VSCE_PAT }}
 
       - name: create GitHub Release
