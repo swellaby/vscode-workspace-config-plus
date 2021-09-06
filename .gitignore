@@ -6,3 +6,5 @@ node_modules/
 .ntvs_analysis.dat*
 npm-debug*
 .vsix/
+.vscode/*.json
+!.vscode/*.shared.json
