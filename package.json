@@ -76,7 +76,7 @@
   ],
   "engines": {
     "node": ">=12",
-    "vscode": "^1.59.0"
+    "vscode": "^1.49.0"
   },
   "homepage": "https://github.com/swellaby/vscode-workspace-config-plus",
   "bugs": {
