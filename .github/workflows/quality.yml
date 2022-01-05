@@ -9,7 +9,11 @@ jobs:
   sonar:
     runs-on: ubuntu-latest
     name: sonar
-    if: github.repository == 'swellaby/vscode-workspace-config-plus'
+    # Only run Sonar on PRs originating in repo, except Dependabot PRs which
+    # do not have access to secrets https://github.com/dependabot/dependabot-core/issues/3253#issuecomment-852541544
+    if: |
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      github.actor != 'dependabot[bot]'
 
     steps:
       - name: checkout
