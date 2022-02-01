@@ -109,7 +109,7 @@
     "prettier": "^2.5.1",
     "rimraf": "^3.0.2",
     "sinon": "^12.0.1",
-    "vsce": "^2.6.3"
+    "vsce": "^2.6.6"
   },
   "dependencies": {
     "jsonc-parser": "^3.0.0"
