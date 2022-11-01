@@ -103,7 +103,7 @@
     "c8": "^7.12.0",
     "chai": "^4.3.6",
     "eslint": "^8.24.0",
-    "mocha": "^10.0.0",
+    "mocha": "^10.1.0",
     "mocha-multi-reporters": "^1.5.1",
     "mocha-sonarqube-reporter": "^1.0.2",
     "prettier": "^2.7.1",
