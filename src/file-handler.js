@@ -10,7 +10,9 @@ const _loadConfigFromFile = async (fileUri, readFile) => {
     return undefined;
   }
   const errors = [];
-  const config = jsoncParser.parse(contents.toString(), errors, { allowTrailingComma: true });
+  const config = jsoncParser.parse(contents.toString(), errors, {
+    allowTrailingComma: true,
+  });
   if (errors.length > 0) {
     throw new Error(`Failed to parse contents of: ${fileUri.fsPath}`);
   }
