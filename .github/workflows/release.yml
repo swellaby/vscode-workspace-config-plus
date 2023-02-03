@@ -34,7 +34,8 @@ jobs:
           git checkout main
           git config user.name swellbot
           git config user.email opensource@swellaby.com
-          npm run package:vsix -- patch -m "chore: bump version [skip ci]"
+          npm version patch -m "chore: bump version [skip ci]"
+          npm run package:vsix
           echo ::set-output name=version::$(node -e "console.log(require('./package.json').version);")
 
       - name: archive workspace
