@@ -2,6 +2,7 @@
 
 const { isDeepStrictEqual } = require('util');
 const jsoncParser = require('jsonc-parser');
+const deepMerge = require('deepmerge');
 const log = require('./log');
 
 const _loadConfigFromFile = async (fileUri, readFile) => {
@@ -46,7 +47,7 @@ const mergeConfigFiles = async ({
       vscodeFileUri,
       readFile
     );
-    const merged = { ...sharedFileContents, ...localFileContents };
+    const merged = deepMerge(sharedFileContents, localFileContents);
 
     // Avoid rewriting the file if there are no changes to be applied
     if (isDeepStrictEqual(vscodeFileContents, merged)) {
