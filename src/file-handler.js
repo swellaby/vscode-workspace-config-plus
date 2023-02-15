@@ -58,7 +58,7 @@ const mergeConfigFiles = async ({
     await writeFile(
       vscodeFileUri,
       Buffer.from(
-        JSON.stringify({ ...vscodeFileContents, ...merged }, null, 2)
+        JSON.stringify(deepMerge(vscodeFileContents, merged), null, 2)
       ),
       { create: true, overwrite: true }
     );
