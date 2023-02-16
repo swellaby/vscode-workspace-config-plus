@@ -131,7 +131,7 @@ suite('file handler Suite', () => {
       loadConfigFromFileStub
         .withArgs(vscodeFileUri, callbacks.readFile)
         .callsFake(() => {
-          return Promise.resolve({ ...sharedConfig, ...localConfig });
+          return Promise.resolve(deepMerge(sharedConfig, localConfig));
         });
       await mergeConfigFiles({
         vscodeFileUri,
