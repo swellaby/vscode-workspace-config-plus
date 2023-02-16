@@ -86,9 +86,7 @@ suite('file handler Suite', () => {
     const mergeConfigFiles = fileHandler.mergeConfigFiles;
     const sharedConfig = {
       foo: false,
-      'editor.rulers': [
-        100,
-      ],
+      'editor.rulers': [100],
       '[typescript]': {
         'editor.dragAndDrop': false,
         'editor.tabCompletion': 'on',
@@ -97,9 +95,7 @@ suite('file handler Suite', () => {
     const localConfig = {
       foo: true,
       'window.zoomLevel': 1,
-      'editor.rulers': [
-        80,
-      ],
+      'editor.rulers': [80],
       '[typescript]': {
         'editor.dragAndDrop': true,
         'editor.autoIndent': false,
@@ -115,10 +111,7 @@ suite('file handler Suite', () => {
       foo: true,
       'window.zoomLevel': 1,
       bar: 'def',
-      'editor.rulers': [
-        100,
-        80,
-      ],
+      'editor.rulers': [100, 80],
       '[typescript]': {
         'editor.dragAndDrop': true,
         'editor.tabCompletion': 'on',
