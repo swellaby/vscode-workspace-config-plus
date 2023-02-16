@@ -2,6 +2,7 @@
 
 const { assert } = require('chai');
 const jsoncParser = require('jsonc-parser');
+const deepMerge = require('deepmerge');
 const Sinon = require('sinon');
 
 const { callbacks } = require('../data');
@@ -83,13 +84,46 @@ suite('file handler Suite', () => {
     const sharedFileUri = { path: '.vscode/settings.shared.json' };
     const localFileUri = { path: '.vscode/settings.local.json' };
     const mergeConfigFiles = fileHandler.mergeConfigFiles;
-    const sharedConfig = { foo: false };
-    const localConfig = { foo: true, 'window.zoomLevel': 1, baz: false };
-    const vscodeConfig = { foo: 'abc', 'window.zoomLevel': 0, bar: 'def' };
+    const sharedConfig = {
+      foo: false,
+      'editor.rulers': [
+        100,
+      ],
+      '[typescript]': {
+        'editor.dragAndDrop': false,
+        'editor.tabCompletion': 'on',
+      },
+    };
+    const localConfig = {
+      foo: true,
+      'window.zoomLevel': 1,
+      'editor.rulers': [
+        80,
+      ],
+      '[typescript]': {
+        'editor.dragAndDrop': true,
+        'editor.autoIndent': false,
+      },
+      baz: false,
+    };
+    const vscodeConfig = {
+      foo: 'abc',
+      'window.zoomLevel': 0,
+      bar: 'def',
+    };
     const expConfig = {
       foo: true,
       'window.zoomLevel': 1,
       bar: 'def',
+      'editor.rulers': [
+        100,
+        80,
+      ],
+      '[typescript]': {
+        'editor.dragAndDrop': true,
+        'editor.tabCompletion': 'on',
+        'editor.autoIndent': false,
+      },
       baz: false,
     };
 
