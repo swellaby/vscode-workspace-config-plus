@@ -41,8 +41,8 @@ Be sure your `*.local.json` files and the main VS Code files are excluded from v
 
 ```
 # .gitignore
-.vscode/settings.json
-.vscode/settings.local.json
+.vscode/*
+!.vscode/*.shared.json
 ```
 
 Then just add your desired `*.shared.json` and/or `*.local.json` files to your `.vscode` directory in your workspace folder(s). The extension works with both standard (single root) workspace projects and [multi root workspaces][multi-root-workspace-docs].
