@@ -55,7 +55,24 @@
         "fileMatch": "/.vscode/tasks.local.json",
         "url": "vscode://schemas/tasks"
       }
-    ]
+    ],
+    "configuration": {
+      "type": "object",
+      "title": "Workspace Config+",
+      "properties": {
+        "workspaceConfigPlus.arrayMerge": {
+          "description": "Defines the merge behavior to use for arrays",
+          "type": "string",
+          "scope": "resource",
+          "default": "combine",
+          "enum": ["combine", "overwrite"],
+          "enumDescriptions": [
+            "Performs a deep merge of array-type properties overlapping in both local and shared user settings, where the arrays are combined",
+            "If both the local and shared files define a value for the same array-type property, then the array value in the local file is used and the shared array value is ignored"
+          ]
+        }
+      }
+    }
   },
   "keywords": [
     "local settings",
