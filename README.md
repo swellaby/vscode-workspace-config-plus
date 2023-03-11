@@ -1,6 +1,8 @@
-# VS Code Workspace Config+
+# Workspace Config+
 
-Provides additional capabilities to manage your workspace configuration, including the ability to utilize `shared` and `local` versions of the VS Code workspace configuration files.
+Provides additional capabilities to manage your "workspace" configuration settings, including the ability to utilize `shared` and `local` versions of the VS Code workspace configuration files.
+
+> **Note**: A VS Code "workspace" is usually just your project root folder. This extension can be immediately used in standard, single root/projects, _as well as_ more advanced, multi-root workspaces. See the VS Code docs [What is a VS Code "Workspace"?](https://code.visualstudio.com/docs/editor/workspaces) and [Workspace Settings](https://code.visualstudio.com/docs/getstarted/settings#_workspace-settings) for more information.
 
 ---
 
@@ -54,6 +56,88 @@ The extension will re-evaluate and, if necessary, automatically apply any config
 This extension is not an all-or-nothing proposition. Team members and contributors that want to take advantage of the shared configuration defined in the `*.shared.json` files only need to have this extension installed and enabled. Any contributor that _doesn't_ want to pull in any of the project's shared configuration can either not install or disable this extension, or they can create a corresponding `*.local.json` file to override the shared settings.
 
 [multi-root-workspace-docs]: https://code.visualstudio.com/docs/editor/multi-root-workspaces
+
+#### Settings
+
+> Note that currently Workspace Config+ requires you to specify any of the below settings in your "workspace" files, and it doesn't yet support setting them at the user/machine global level.
+>
+> If you'd like to use these settings to modify the behavior of Workspace Config+ ,then you'll need to add the setting to either `settings.local.json` or `settings.shared.json`
+
+##### `arrayMerge`
+
+Allows you to specify how the extension should handle array-type keys that are defined in multiple places (i.e. in both the `*.shared.json` and `*.local.json)`)
+
+**Default**: `combine`  
+**Supported values**: [ `combine`, `overwrite` ]
+
+When set to `combine`, the two array values will be combined in the final result.
+
+For example, if you have the following:
+
+`tasks.local.json`
+
+```json
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "My awesome personal task",
+      ...
+    }
+  ]
+}
+```
+
+and `tasks.shared.json`
+
+```json
+{
+  "version": "0.1.0",
+  "foo": "bar",
+  "configurations": [
+    {
+      "name": "Shared Team task #1",
+      ...
+    }
+  ]
+}
+```
+
+The end result in `tasks.json` that VS Code will see and honor will have both of the tasks defined under the `configurations` arrays in the shared and local files:
+
+`tasks.json`
+
+```json
+{
+  "version": "0.2.0",
+  "foo": "bar",
+  "configurations": [
+    {
+      "name": "My awesome personal task",
+      ...
+    },
+    {
+      "name": "Shared Team task #1",
+      ...
+    }
+  ]
+}
+```
+
+However, if you change the value of the setting to `overwrite`, then the overlapping `configurations` array value in `*.local.json` will be used instead, producing the below for `tasks.json`:
+
+```json
+{
+  "version": "0.2.0",
+  "foo": "bar",
+  "configurations": [
+    {
+      "name": "Shared Team task #1",
+      ...
+    }
+  ]
+}
+```
 
 #### Limitations
 
