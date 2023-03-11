@@ -118,11 +118,11 @@ This project follows the standard [Code of Conduct](https://github.com/swellaby/
 [ext-url]: https://marketplace.visualstudio.com/items?itemName=swellaby.workspace-config-plus
 [license-url]: https://github.com/swellaby/vscode-workspace-config-plus/blob/main/LICENSE
 [license-badge]: https://img.shields.io/github/license/swellaby/vscode-workspace-config-plus?style=flat-square&color=blue
-[linux-ci-badge]: https://img.shields.io/github/workflow/status/swellaby/vscode-workspace-config-plus/linux-ci/main?label=linux%20build&style=flat-square
+[linux-ci-badge]: https://img.shields.io/github/actions/workflow/status/swellaby/vscode-workspace-config-plus/linux.yml?label=linux%20build&style=flat-square&branch=main
 [linux-ci-url]: https://github.com/swellaby/vscode-workspace-config-plus/actions/workflows/linux.yml?query=branch%3Amain
-[mac-ci-badge]: https://img.shields.io/github/workflow/status/swellaby/vscode-workspace-config-plus/macos-ci/main?label=mac%20build&style=flat-square
+[mac-ci-badge]: https://img.shields.io/github/actions/workflow/status/swellaby/vscode-workspace-config-plus/mac.yml?label=mac%20build&style=flat-square&branch=main
 [mac-ci-url]: https://github.com/swellaby/vscode-workspace-config-plus/actions/workflows/mac.yml?query=branch%3Amain
-[windows-ci-badge]: https://img.shields.io/github/workflow/status/swellaby/vscode-workspace-config-plus/windows-ci/main?label=windows%20build&style=flat-square
+[windows-ci-badge]: https://img.shields.io/github/actions/workflow/status/swellaby/vscode-workspace-config-plus/windows.yml?label=windows%20build&style=flat-square&branch=main
 [windows-ci-url]: https://github.com/swellaby/vscode-workspace-config-plus/actions/workflows/windows.yml?query=branch%3Amain
 [coverage-badge]: https://img.shields.io/codecov/c/github/swellaby/vscode-workspace-config-plus/main?style=flat-square
 [coverage-url]: https://codecov.io/gh/swellaby/vscode-workspace-config-plus
