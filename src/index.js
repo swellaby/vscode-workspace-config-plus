@@ -10,9 +10,13 @@ const {
 const {
   createFileSystemWatcher,
   createRelativePattern,
+  FileType,
   joinPath,
+  stat,
   readFile,
   writeFile,
+  delete: delete_,
+  getWorkspaceConfiguration,
 } = require('./wrappers');
 
 const activate = () => {
@@ -20,25 +24,33 @@ const activate = () => {
     return;
   }
   initializeLog(name => window.createOutputChannel(name));
-  workspace.workspaceFolders.forEach(f =>
+  for (const f of workspace.workspaceFolders) {
     initializeWorkspaceFolder({
       folderUri: f.uri,
       createFileSystemWatcher,
       createRelativePattern,
+      FileType,
       joinPath,
+      stat,
       readFile,
       writeFile,
-    }),
-  );
+      delete: delete_,
+      getWorkspaceConfiguration,
+    });
+  }
   workspace.onDidChangeWorkspaceFolders(({ added, removed }) =>
     handleWorkspaceFolderUpdates({
       added,
       removed,
       createFileSystemWatcher,
       createRelativePattern,
+      FileType,
       joinPath,
+      stat,
       readFile,
       writeFile,
+      delete: delete_,
+      getWorkspaceConfiguration,
     }),
   );
 };

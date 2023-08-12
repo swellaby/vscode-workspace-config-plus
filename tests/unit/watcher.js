@@ -82,7 +82,7 @@ suite('watcher Suite', () => {
       await handleFileEvent(uris.sharedFileUri);
       clock.tick(349);
       await handleFileEvent(uris.sharedFileUri);
-      assert.isTrue(mergeFilesStub.calledOnce);
+      assert.deepStrictEqual(mergeFilesStub.callCount, 1);
     });
 
     test('Should merge again if same type of events happen outside the cache boundary', async () => {
@@ -90,17 +90,17 @@ suite('watcher Suite', () => {
       await handleFileEvent(uris.sharedFileUri);
       clock.tick(351);
       await handleFileEvent(uris.sharedFileUri);
-      assert.isTrue(mergeFilesStub.calledTwice);
+      assert.deepStrictEqual(mergeFilesStub.callCount, 2);
     });
 
     test('Should register watcher correctly', async () => {
       generateFileSystemWatcher(args);
-      assert.isTrue(registerSharedFileSystemWatcherStub.calledOnce);
+      assert.deepStrictEqual(registerSharedFileSystemWatcherStub.callCount, 1);
       const callArgs = registerSharedFileSystemWatcherStub.firstCall.args;
       // The fourth arg is the inner callback function, which is validated above.
-      assert.deepEqual(callArgs[0], globPattern);
-      assert.deepEqual(callArgs[1], callbacks.createFileSystemWatcher);
-      assert.deepEqual(callArgs[2], folderUri);
+      assert.deepStrictEqual(callArgs[0], globPattern);
+      assert.deepStrictEqual(callArgs[1], callbacks.createFileSystemWatcher);
+      assert.deepStrictEqual(callArgs[2], folderUri);
     });
   });
 
@@ -178,7 +178,7 @@ suite('watcher Suite', () => {
         vscodeDirUri,
         handleEvent,
       );
-      assert.deepEqual(watcher._privateState.fileSystemWatchers[`${vscodeDirUri}`], [
+      assert.deepStrictEqual(watcher._privateState.fileSystemWatchers[`${vscodeDirUri}`], [
         didChange,
         didCreate,
         didDelete,
@@ -189,10 +189,10 @@ suite('watcher Suite', () => {
   suite('disposeAllWatchers Suite', () => {
     test('Should invoke dispose on all watcher disposables', () => {
       watcher.disposeAllWatchers();
-      assert.isTrue(firstWatcherDisposeStub.calledOnce);
-      assert.isTrue(secondWatcherDisposeStub.calledOnce);
-      assert.isTrue(thirdWatcherDisposeStub.calledOnce);
-      assert.isTrue(fourthWatcherDisposeStub.calledOnce);
+      assert.deepStrictEqual(firstWatcherDisposeStub.callCount, 1);
+      assert.deepStrictEqual(secondWatcherDisposeStub.callCount, 1);
+      assert.deepStrictEqual(thirdWatcherDisposeStub.callCount, 1);
+      assert.deepStrictEqual(fourthWatcherDisposeStub.callCount, 1);
     });
   });
 
@@ -201,10 +201,10 @@ suite('watcher Suite', () => {
       watcher.disposeWorkspaceWatcher(
         /** @type {import('vscode').Uri} */ (/** @type {unknown} */ ('first')),
       );
-      assert.isTrue(firstWatcherDisposeStub.calledOnce);
-      assert.isTrue(secondWatcherDisposeStub.calledOnce);
-      assert.isFalse(thirdWatcherDisposeStub.calledOnce);
-      assert.isFalse(fourthWatcherDisposeStub.calledOnce);
+      assert.deepStrictEqual(firstWatcherDisposeStub.callCount, 1);
+      assert.deepStrictEqual(secondWatcherDisposeStub.callCount, 1);
+      assert.notStrictEqual(thirdWatcherDisposeStub.callCount, 1);
+      assert.notStrictEqual(fourthWatcherDisposeStub.callCount, 1);
     });
   });
 });

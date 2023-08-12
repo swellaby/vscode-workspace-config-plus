@@ -32,8 +32,12 @@ const _registerSharedFileSystemWatcher = (
  * @param {object} args
  * @param {import('vscode').GlobPattern} args.globPattern
  * @param {import('./wrappers').createFileSystemWatcher} args.createFileSystemWatcher
+ * @param {typeof import('./wrappers').FileType} args.FileType
+ * @param {import('./wrappers').stat} args.stat
  * @param {import('./wrappers').readFile} args.readFile
  * @param {import('./wrappers').writeFile} args.writeFile
+ * @param {import('./wrappers').delete} args.delete
+ * @param {import('./wrappers').getWorkspaceConfiguration} args.getWorkspaceConfiguration
  * @param {import('vscode').Uri} args.folderUri
  * @param {import('vscode').Uri} args.vscodeFileUri
  * @param {import('vscode').Uri} args.sharedFileUri
@@ -43,8 +47,12 @@ const _registerSharedFileSystemWatcher = (
 const generateFileSystemWatcher = ({
   globPattern,
   createFileSystemWatcher,
+  FileType,
+  stat,
   readFile,
   writeFile,
+  delete: delete_,
+  getWorkspaceConfiguration,
   folderUri,
   vscodeFileUri,
   sharedFileUri,
@@ -70,8 +78,12 @@ const generateFileSystemWatcher = ({
         vscodeFileUri,
         sharedFileUri,
         localFileUri,
+        FileType,
+        stat,
         readFile,
         writeFile,
+        delete: delete_,
+        getWorkspaceConfiguration,
       });
     }
     cache[`${e}`] = { prior: current };
@@ -90,17 +102,18 @@ const generateFileSystemWatcher = ({
  */
 const disposeWorkspaceWatcher = workspaceUri => {
   if (_privateState.fileSystemWatchers[`${workspaceUri}`]) {
-    _privateState.fileSystemWatchers[`${workspaceUri}`].forEach(w =>
-      w.dispose(),
-    );
+    for (const w of _privateState.fileSystemWatchers[`${workspaceUri}`])
+      w.dispose();
   }
 };
 
 /** @returns {void} */
 const disposeAllWatchers = () => {
-  Object.values(_privateState.fileSystemWatchers).forEach(watchers => {
-    watchers.forEach(w => w.dispose());
-  });
+  for (const watchers of Object.values(_privateState.fileSystemWatchers)) {
+    for (const w of watchers) {
+      w.dispose();
+    }
+  }
 };
 
 module.exports = {

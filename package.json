@@ -73,6 +73,12 @@
             "Performs a deep merge of array-type properties overlapping in both local and shared user settings, where the arrays are combined",
             "If both the local and shared files define a value for the same array-type property, then the array value in the local file is used and the shared array value is ignored"
           ]
+        },
+        "workspaceConfigPlus.replaceMergedSymlinks": {
+          "description": "Replace a merged configuration file when it's a symlink and the content matches its shared configuration file, instead of modifying the symlink target file",
+          "type": "boolean",
+          "scope": "resource",
+          "default": false
         }
       }
     }

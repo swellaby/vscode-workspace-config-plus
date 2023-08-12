@@ -11,9 +11,13 @@ const workspaceConfigFileNames = ['launch', 'settings', 'tasks'];
  * @param {import('vscode').Uri} args.folderUri
  * @param {import('./wrappers').createFileSystemWatcher} args.createFileSystemWatcher
  * @param {import('./wrappers').createRelativePattern} args.createRelativePattern
+ * @param {typeof import('./wrappers').FileType} args.FileType
  * @param {import('./wrappers').joinPath} args.joinPath
+ * @param {import('./wrappers').stat} args.stat
  * @param {import('./wrappers').readFile} args.readFile
  * @param {import('./wrappers').writeFile} args.writeFile
+ * @param {import('./wrappers').delete} args.delete
+ * @param {import('./wrappers').getWorkspaceConfiguration} args.getWorkspaceConfiguration
  * @returns {void}
  */
 const initializeWorkspaceFolder = ({
@@ -21,10 +25,14 @@ const initializeWorkspaceFolder = ({
   createFileSystemWatcher,
   createRelativePattern,
   joinPath,
+  FileType,
+  stat,
   readFile,
   writeFile,
+  delete: delete_,
+  getWorkspaceConfiguration,
 }) => {
-  workspaceConfigFileNames.forEach(configFile => {
+  for (const configFile of workspaceConfigFileNames) {
     const workspaceVscodeDirUri = joinPath(folderUri, '.vscode');
     const sharedFile = `${configFile}.shared`;
     const localFile = `${configFile}.local`;
@@ -38,8 +46,12 @@ const initializeWorkspaceFolder = ({
     watcher.generateFileSystemWatcher({
       globPattern,
       createFileSystemWatcher,
+      FileType,
+      stat,
       readFile,
       writeFile,
+      delete: delete_,
+      getWorkspaceConfiguration,
       folderUri,
       vscodeFileUri,
       sharedFileUri,
@@ -49,10 +61,14 @@ const initializeWorkspaceFolder = ({
       vscodeFileUri,
       sharedFileUri,
       localFileUri,
+      FileType,
+      stat,
       readFile,
       writeFile,
+      delete: delete_,
+      getWorkspaceConfiguration,
     });
-  });
+  }
 };
 /**
  * @typedef {{ readonly uri: import('vscode').Uri }} WorkspaceFolder
@@ -61,9 +77,13 @@ const initializeWorkspaceFolder = ({
  * @param {readonly WorkspaceFolder[] | number | string} [args.removed]
  * @param {import('./wrappers').createFileSystemWatcher} args.createFileSystemWatcher
  * @param {import('./wrappers').createRelativePattern} args.createRelativePattern
+ * @param {typeof import('./wrappers').FileType} args.FileType
  * @param {import('./wrappers').joinPath} args.joinPath
+ * @param {import('./wrappers').stat} args.stat
  * @param {import('./wrappers').readFile} args.readFile
  * @param {import('./wrappers').writeFile} args.writeFile
+ * @param {import('./wrappers').delete} args.delete
+ * @param {import('./wrappers').getWorkspaceConfiguration} args.getWorkspaceConfiguration
  * @returns {void}
  */
 const handleWorkspaceFolderUpdates = ({
@@ -71,9 +91,13 @@ const handleWorkspaceFolderUpdates = ({
   removed,
   createFileSystemWatcher,
   createRelativePattern,
+  FileType,
   joinPath,
+  stat,
   readFile,
   writeFile,
+  delete: delete_,
+  getWorkspaceConfiguration,
 }) => {
   if (added && Array.isArray(added)) {
     for (const f of /** @type {WorkspaceFolder[]} */ (added)) {
@@ -82,8 +106,12 @@ const handleWorkspaceFolderUpdates = ({
         createFileSystemWatcher,
         createRelativePattern,
         joinPath,
+        FileType,
+        stat,
         readFile,
         writeFile,
+        delete: delete_,
+        getWorkspaceConfiguration,
       });
     }
   }

@@ -1,6 +1,6 @@
 'use strict';
 
-const { RelativePattern, Uri, workspace } = require('vscode');
+const { FileType, RelativePattern, Uri, workspace } = require('vscode');
 
 /**
  * Wrappers of VS Code Extension API functions.
@@ -35,6 +35,11 @@ const createRelativePattern = (base, pattern) =>
  */
 const joinPath = (base, pattern) => Uri.joinPath(base, pattern);
 /**
+ * @param {Uri} uri
+ * @returns {Thenable<import('vscode').FileStat>}
+ */
+const stat = uri => workspace.fs.stat(uri);
+/**
  * @param {Uri} fileUri
  * @returns {Thenable<Uint8Array>}
  */
@@ -65,11 +70,33 @@ const writeFile = (fileUri, contents, options) => {
      */ (workspace.fs.writeFile)(fileUri, contents, options)
   );
 };
+/**
+ * @typedef {object} delete_.Options
+ * @property {boolean} [delete_.Options.recursive]
+ * @property {boolean} [delete_.Options.useTrash]
+ * @param {Uri} uri
+ * @param {delete_.Options} [options]
+ * @returns {Thenable<void>}
+ */
+const delete_ = (uri, options) => workspace.fs.delete(uri, options);
+/**
+ * @template T
+ * @param {string} section
+ * @param {T} defaultValue
+ * @param {import('vscode').ConfigurationScope | null} [scope]
+ * @returns {T}
+ */
+const getWorkspaceConfiguration = (section, defaultValue, scope) =>
+  workspace.getConfiguration(undefined, scope).get(section, defaultValue);
 
 module.exports = {
   createFileSystemWatcher,
   createRelativePattern,
+  FileType,
   joinPath,
+  stat,
   readFile,
   writeFile,
+  delete: delete_,
+  getWorkspaceConfiguration,
 };

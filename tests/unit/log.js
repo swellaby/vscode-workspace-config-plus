@@ -55,13 +55,13 @@ suite('log Suite', () => {
         actName = name;
         return outputChannel;
       });
-      assert.deepEqual(actName, 'Workspace Config+');
+      assert.deepStrictEqual(actName, 'Workspace Config+');
     });
 
     test('Should initialize internal channel', () => {
       const outputChannel = unimplementedOutputChannel('foo');
       log.initialize(() => outputChannel);
-      assert.deepEqual(log._privateState.outputChannel, outputChannel);
+      assert.deepStrictEqual(log._privateState.outputChannel, outputChannel);
     });
   });
 
@@ -86,7 +86,7 @@ suite('log Suite', () => {
 
     /** @param {string} level */
     const assertLogMessage = level => {
-      assert.deepEqual(`[${localString}] [${level}] ${msg}`, actLogMessage);
+      assert.deepStrictEqual(`[${localString}] [${level}] ${msg}`, actLogMessage);
     };
 
     test('Warn should set correct log level', () => {
@@ -118,7 +118,7 @@ suite('log Suite', () => {
       log._privateState.outputChannel = outputChannel;
       const stub = Sinon.stub(outputChannel, 'dispose');
       log.dispose();
-      assert.isTrue(stub.calledOnce);
+      assert.deepStrictEqual(stub.callCount, 1);
     });
   });
 });

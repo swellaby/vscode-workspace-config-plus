@@ -15,5 +15,6 @@
   "[yaml]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
+  "mochaExplorer.configFile": "tests/unit/.mocharc.yml",
   "typescript.tsdk": "node_modules/typescript/lib"
 }

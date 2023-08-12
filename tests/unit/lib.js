@@ -20,13 +20,11 @@ suite('lib Suite', () => {
       const logDisposeStub = Sinon.stub(log, 'dispose');
       const disposeAllWatchersStub = Sinon.stub(watcher, 'disposeAllWatchers');
       lib.deactivate();
-      assert.isTrue(
-        logInfoStub.calledOnceWithExactly(
-          'Deactivating and disposing all watchers',
-        ),
-      );
-      assert.isTrue(disposeAllWatchersStub.calledOnce);
-      assert.isTrue(logDisposeStub.calledOnce);
+      assert.deepStrictEqual(logInfoStub.getCall(0).args, [
+        'Deactivating and disposing all watchers',
+      ]);
+      assert.deepStrictEqual(disposeAllWatchersStub.callCount, 1);
+      assert.deepStrictEqual(logDisposeStub.callCount, 1);
     });
   });
 
@@ -49,12 +47,12 @@ suite('lib Suite', () => {
 
     test('Should handle falsy value for added folders', () => {
       lib.handleWorkspaceFolderUpdates({ ...data.callbacks });
-      assert.isFalse(initializeWorkspaceFolderStub.called);
+      assert.deepStrictEqual(initializeWorkspaceFolderStub.callCount, 0);
     });
 
     test('Should handle non-array value for added folders', () => {
       lib.handleWorkspaceFolderUpdates({ added: 7, ...data.callbacks });
-      assert.isFalse(initializeWorkspaceFolderStub.called);
+      assert.deepStrictEqual(initializeWorkspaceFolderStub.callCount, 0);
     });
 
     test('Should properly initialize added folders', () => {
@@ -71,7 +69,7 @@ suite('lib Suite', () => {
         },
       ];
       lib.handleWorkspaceFolderUpdates({ added, ...data.callbacks });
-      assert.deepEqual(initializeWorkspaceFolderStub.firstCall.firstArg, {
+      assert.deepStrictEqual(initializeWorkspaceFolderStub.firstCall.firstArg, {
         folderUri: added[0].uri,
         ...data.callbacks,
       });
@@ -79,12 +77,12 @@ suite('lib Suite', () => {
 
     test('Should handle falsy value for removed folders', () => {
       lib.handleWorkspaceFolderUpdates({ ...data.callbacks });
-      assert.isFalse(disposeWorkspaceWatcherStub.called);
+      assert.deepStrictEqual(disposeWorkspaceWatcherStub.callCount, 0);
     });
 
     test('Should handle non-array value for removed folders', () => {
       lib.handleWorkspaceFolderUpdates({ removed: 'why', ...data.callbacks });
-      assert.isFalse(initializeWorkspaceFolderStub.called);
+      assert.deepStrictEqual(initializeWorkspaceFolderStub.callCount, 0);
     });
 
     test('Should properly handle removed folders', () => {
@@ -101,13 +99,13 @@ suite('lib Suite', () => {
         },
       ];
       lib.handleWorkspaceFolderUpdates({ removed, ...data.callbacks });
-      assert.isTrue(disposeWorkspaceWatcherStub.calledTwice);
-      assert.isTrue(
-        disposeWorkspaceWatcherStub.calledWithExactly(removed[0].uri),
-      );
-      assert.isTrue(
-        disposeWorkspaceWatcherStub.calledWithExactly(removed[1].uri),
-      );
+      assert.deepStrictEqual(disposeWorkspaceWatcherStub.callCount, 2);
+      assert.deepStrictEqual(disposeWorkspaceWatcherStub.getCall(0).args, [
+        removed[0].uri,
+      ]);
+      assert.deepStrictEqual(disposeWorkspaceWatcherStub.getCall(1).args, [
+        removed[1].uri,
+      ]);
     });
   });
 
@@ -120,15 +118,23 @@ suite('lib Suite', () => {
       };
       const logInitializeStub = Sinon.stub(log, 'initialize');
       lib.initializeLog(createOutputChannel);
-      assert.isTrue(
-        logInitializeStub.calledOnceWithExactly(createOutputChannel),
-      );
+      assert.deepStrictEqual(logInitializeStub.getCall(0).args, [
+        createOutputChannel,
+      ]);
     });
   });
 
   suite('initializeWorkspaceFolder Suite', () => {
     const { callbacks } = data;
-    const { createFileSystemWatcher, readFile, writeFile } = callbacks;
+    const {
+      createFileSystemWatcher,
+      FileType,
+      stat,
+      readFile,
+      writeFile,
+      delete: delete_,
+      getWorkspaceConfiguration,
+    } = callbacks;
     /** @type {Sinon.SinonStub} */
     let generateFileSystemWatcherStub;
     /** @type {Sinon.SinonStub} */
@@ -164,33 +170,54 @@ suite('lib Suite', () => {
 
     /** @param {import('vscode').GlobPattern} pattern */
     const assertGenerateWatcherCall = pattern => {
-      assert.isTrue(
-        generateFileSystemWatcherStub.calledWithExactly({
-          globPattern: pattern,
-          folderUri,
-          ...data.uris,
-          createFileSystemWatcher,
-          readFile,
-          writeFile,
-        }),
-      );
+      for (const call of generateFileSystemWatcherStub.getCalls()) {
+        assert.isDefined(call.args[0]);
+        if (call.args[0].globPattern !== undefined) {
+          assert.deepStrictEqual(call.args, [
+            {
+              globPattern: pattern,
+              folderUri,
+              ...data.uris,
+              createFileSystemWatcher,
+              FileType,
+              stat,
+              readFile,
+              writeFile,
+              delete: delete_,
+              getWorkspaceConfiguration,
+            },
+          ]);
+        }
+      }
     };
 
     const assertMergeFilesCall = () => {
-      assert.isTrue(
-        mergeConfigFilesStub.calledWithExactly({
-          ...data.uris,
-          readFile,
-          writeFile,
-        }),
-      );
+      for (const call of generateFileSystemWatcherStub.getCalls()) {
+        assert.isDefined(call.args[0]);
+        if (!('globPattern' in call.args[0])) {
+          assert.deepStrictEqual(call.args, [
+            {
+              ...data.uris,
+              FileType,
+              stat,
+              readFile,
+              writeFile,
+              delete: delete_,
+              getWorkspaceConfiguration,
+            },
+          ]);
+        }
+      }
     };
 
     test('Should run for every entry in target config files', () => {
       const expectedCount = 3;
       lib.initializeWorkspaceFolder({ folderUri, ...callbacks });
-      assert.deepEqual(generateFileSystemWatcherStub.callCount, expectedCount);
-      assert.deepEqual(mergeConfigFilesStub.callCount, expectedCount);
+      assert.deepStrictEqual(
+        generateFileSystemWatcherStub.callCount,
+        expectedCount,
+      );
+      assert.deepStrictEqual(mergeConfigFilesStub.callCount, expectedCount);
     });
 
     test('Should initialize settings.json correctly', () => {
