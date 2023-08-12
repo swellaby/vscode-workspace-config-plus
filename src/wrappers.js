@@ -39,23 +39,32 @@ const joinPath = (base, pattern) => Uri.joinPath(base, pattern);
  * @returns {Thenable<Uint8Array>}
  */
 const readFile = fileUri =>
-  workspace.fs
-    .readFile(fileUri)
-    .then(c => c)
-    .catch(/** @param {never} _ */ _ => {});
+  workspace.fs.readFile(fileUri).then(
+    c => c,
+    _ => {},
+  );
 /**
  * @typedef {{
  *   readonly create?: boolean;
  *   readonly overwrite?: boolean;
  * }} writeFile.Options
- *
  * @param {Uri} fileUri
  * @param {Uint8Array} contents
  * @param {writeFile.Options} [options]
  * @returns {Thenable<void>}
  */
-const writeFile = (fileUri, contents, options) =>
-  workspace.fs.writeFile(fileUri, contents, options);
+const writeFile = (fileUri, contents, options) => {
+  // `options` is undocumented and inconsistently implemented.
+  return (
+    /**
+     * @type {(
+     *   uri: Uri,
+     *   content: Uint8Array,
+     *   options?: writeFile.Options,
+     * ) => Thenable<void>}
+     */ (workspace.fs.writeFile)(fileUri, contents, options)
+  );
+};
 
 module.exports = {
   createFileSystemWatcher,

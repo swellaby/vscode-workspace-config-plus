@@ -55,9 +55,10 @@ const initializeWorkspaceFolder = ({
   });
 };
 /**
+ * @typedef {{ readonly uri: import('vscode').Uri }} WorkspaceFolder
  * @param {object} args
- * @param {readonly import('vscode').WorkspaceFolder[]} args.added
- * @param {readonly import('vscode').WorkspaceFolder[]} args.removed
+ * @param {readonly WorkspaceFolder[] | number | string} [args.added]
+ * @param {readonly WorkspaceFolder[] | number | string} [args.removed]
  * @param {import('./wrappers').createFileSystemWatcher} args.createFileSystemWatcher
  * @param {import('./wrappers').createRelativePattern} args.createRelativePattern
  * @param {import('./wrappers').joinPath} args.joinPath

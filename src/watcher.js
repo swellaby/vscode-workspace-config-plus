@@ -2,8 +2,10 @@
 
 const fileHandler = require('./file-handler');
 
-/** @type {{ [index: string]: import('vscode').Disposable[] }} */
-const _fileSystemWatchers = {};
+let _privateState = {
+  /** @type {{ [index: string]: import('vscode').Disposable[] }} */
+  fileSystemWatchers: {},
+};
 
 /**
  * @param {import('vscode').GlobPattern} globPattern
@@ -19,7 +21,7 @@ const _registerSharedFileSystemWatcher = (
   onFileSystemEventHandler,
 ) => {
   const fileSystemChangeWatcher = createFileSystemWatcher(globPattern);
-  module.exports._fileSystemWatchers[workspaceUri] = [
+  _privateState.fileSystemWatchers[`${workspaceUri}`] = [
     fileSystemChangeWatcher.onDidChange(onFileSystemEventHandler),
     fileSystemChangeWatcher.onDidCreate(onFileSystemEventHandler),
     fileSystemChangeWatcher.onDidDelete(onFileSystemEventHandler),
@@ -56,7 +58,7 @@ const generateFileSystemWatcher = ({
    */
   async function handleFileEvent(e) {
     const current = new Date().valueOf();
-    let entry = cache[e];
+    let entry = cache[`${e}`];
     // Node.js' fs will fire two events in rapid succession on file saves.
     // Attempt to avoid running duplicative merges by checking whether
     // we've just detected and executed a merge for the modified file within
@@ -72,7 +74,7 @@ const generateFileSystemWatcher = ({
         writeFile,
       });
     }
-    cache[e] = { prior: current };
+    cache[`${e}`] = { prior: current };
   }
   module.exports._registerSharedFileSystemWatcher(
     globPattern,
@@ -87,14 +89,16 @@ const generateFileSystemWatcher = ({
  * @returns {void}
  */
 const disposeWorkspaceWatcher = workspaceUri => {
-  if (module.exports._fileSystemWatchers[workspaceUri]) {
-    module.exports._fileSystemWatchers[workspaceUri].forEach(w => w.dispose());
+  if (_privateState.fileSystemWatchers[`${workspaceUri}`]) {
+    _privateState.fileSystemWatchers[`${workspaceUri}`].forEach(w =>
+      w.dispose(),
+    );
   }
 };
 
 /** @returns {void} */
 const disposeAllWatchers = () => {
-  Object.values(module.exports._fileSystemWatchers).forEach(watchers => {
+  Object.values(_privateState.fileSystemWatchers).forEach(watchers => {
     watchers.forEach(w => w.dispose());
   });
 };
@@ -104,6 +108,6 @@ module.exports = {
   disposeWorkspaceWatcher,
   generateFileSystemWatcher,
   // Private, only export for test stubbing
-  _fileSystemWatchers,
+  _privateState,
   _registerSharedFileSystemWatcher,
 };

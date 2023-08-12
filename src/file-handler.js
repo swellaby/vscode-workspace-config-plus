@@ -107,7 +107,9 @@ const mergeConfigFiles = async ({
       { create: true, overwrite: true },
     );
   } catch (e) {
-    log.error(e.message);
+    if (e instanceof Error) {
+      log.error(e.message);
+    }
     log.debug(e);
   }
 };

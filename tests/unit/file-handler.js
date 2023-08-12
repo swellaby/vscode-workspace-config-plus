@@ -11,7 +11,10 @@ const log = require('../../src/log');
 suite('file handler Suite', () => {
   /** @type {Sinon.SinonStub} */
   let readFileStub;
-  const fileUri = { fsPath: 'projA/.vscode/settings.shared.json' };
+  /** @type {import('vscode').Uri} */
+  const fileUri = /** @type {import('vscode').Uri} */ (
+    /** @type {unknown} */ ({ fsPath: 'projA/.vscode/settings.shared.json' })
+  );
   const config = { 'window.zoomLevel': -1 };
   const contents = JSON.stringify(config);
   const buffer = Buffer.from(contents);
@@ -19,7 +22,7 @@ suite('file handler Suite', () => {
   setup(() => {
     readFileStub = Sinon.stub(callbacks, 'readFile')
       .withArgs(fileUri)
-      .callsFake(() => buffer);
+      .callsFake(async () => buffer);
   });
 
   teardown(() => {
@@ -60,10 +63,13 @@ suite('file handler Suite', () => {
         await _loadConfigFromFile(fileUri, callbacks.readFile);
         assert.fail('Should have thrown');
       } catch (e) {
-        assert.deepEqual(
-          e.message,
-          `Failed to parse contents of: ${fileUri.fsPath}`,
-        );
+        assert.instanceOf(e, Error);
+        if (e instanceof Error) {
+          assert.deepEqual(
+            e.message,
+            `Failed to parse contents of: ${fileUri.fsPath}`,
+          );
+        }
       }
     });
   });
@@ -81,9 +87,15 @@ suite('file handler Suite', () => {
     let logDebugStub;
     /** @type {Sinon.SinonStub} */
     let logErrorStub;
-    const vscodeFileUri = { fsPath: '.vscode/settings.json' };
-    const sharedFileUri = { path: '.vscode/settings.shared.json' };
-    const localFileUri = { path: '.vscode/settings.local.json' };
+    const vscodeFileUri = /** @type {import('vscode').Uri} */ ({
+      fsPath: '.vscode/settings.json',
+    });
+    const sharedFileUri = /** @type {import('vscode').Uri} */ ({
+      path: '.vscode/settings.shared.json',
+    });
+    const localFileUri = /** @type {import('vscode').Uri} */ ({
+      path: '.vscode/settings.local.json',
+    });
     const mergeConfigFiles = fileHandler.mergeConfigFiles;
     const vscodeConfig = {
       foo: 'abc',

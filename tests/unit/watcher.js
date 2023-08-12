@@ -23,7 +23,7 @@ suite('watcher Suite', () => {
   let fourthWatcherDisposeStub;
 
   setup(() => {
-    watcher._fileSystemWatchers = {
+    watcher._privateState.fileSystemWatchers = {
       first: [firstWatcher, secondWatcher],
       second: [thirdWatcher, fourthWatcher],
     };
@@ -47,13 +47,16 @@ suite('watcher Suite', () => {
     // ~ 2021-08-16T20-17-50Z
     const initialTime = 1629162959014;
     const { generateFileSystemWatcher } = watcher;
-    const folderUri = 'my-project/.vscode';
+    const folderUri = /** @type {import('vscode').Uri} */ (
+      /** @type {unknown} */ ('my-project/.vscode')
+    );
     const args = {
       ...callbacks,
       ...uris,
       folderUri,
       globPattern,
     };
+    /** @type {(e: import('vscode').Uri) => any} */
     let handleFileEvent;
 
     setup(() => {
@@ -69,7 +72,9 @@ suite('watcher Suite', () => {
     });
 
     teardown(() => {
-      handleFileEvent = null;
+      handleFileEvent = /** @type {typeof handleFileEvent} */ (
+        /** @type {unknown} */ (undefined)
+      );
     });
 
     test('Should not merge twice on duplicate events in rapid succession', async () => {
@@ -101,24 +106,52 @@ suite('watcher Suite', () => {
 
   suite('_registerSharedFileSystemWatcher Suite', () => {
     /** @type {Sinon.SinonStub} */
+    // eslint-disable-next-line no-unused-vars
     let createFileSystemWatcherStub;
     /** @type {Sinon.SinonStub} */
+    // eslint-disable-next-line no-unused-vars
     let onDidChangeStub;
     /** @type {Sinon.SinonStub} */
+    // eslint-disable-next-line no-unused-vars
     let onDidCreateStub;
     /** @type {Sinon.SinonStub} */
+    // eslint-disable-next-line no-unused-vars
     let onDidDeleteStub;
-    const fileSystemWatcher = {
-      onDidChange: () => null,
-      onDidCreate: () => null,
-      onDidDelete: () => null,
-    };
-    const vsCodeUri = { uri: 'foo/.vscode' };
-    const pattern = { path: '{a,b}.json' };
-    const handleEvent = (_a, _b, _c, _d = '') => {};
-    const didChange = 'indeed';
-    const didCreate = { foo: 'bar' };
-    const didDelete = false;
+    const fileSystemWatcher =
+      /** @type {import('vscode').FileSystemWatcher} */ ({
+        dispose: () => null,
+        ignoreChangeEvents: false,
+        ignoreCreateEvents: false,
+        ignoreDeleteEvents: false,
+        onDidChange: () =>
+          /** @type {import('vscode').Disposable} */ (
+            /** @type {unknown} */ (null)
+          ),
+        onDidCreate: () =>
+          /** @type {import('vscode').Disposable} */ (
+            /** @type {unknown} */ (null)
+          ),
+        onDidDelete: () =>
+          /** @type {import('vscode').Disposable} */ (
+            /** @type {unknown} */ (null)
+          ),
+      });
+    const vscodeDirUri =
+      /** @type {import('vscode').Uri & import('vscode').WorkspaceFolder} */ (
+        /** @type {unknown} */ ({ uri: 'foo/.vscode' })
+      );
+    const pattern = /** @type {import('vscode').GlobPattern} */ ('{a,b}.json');
+    /** @type {(e: import('vscode').Uri) => any} */
+    const handleEvent = () => {};
+    const didChange = /** @type {import('vscode').Disposable} */ (
+      /** @type {unknown} */ ('indeed')
+    );
+    const didCreate = /** @type {import('vscode').Disposable} */ (
+      /** @type {unknown} */ ({ foo: 'bar' })
+    );
+    const didDelete = /** @type {import('vscode').Disposable} */ (
+      /** @type {unknown} */ (false)
+    );
 
     setup(() => {
       createFileSystemWatcherStub = Sinon.stub(
@@ -142,10 +175,10 @@ suite('watcher Suite', () => {
       watcher._registerSharedFileSystemWatcher(
         pattern,
         callbacks.createFileSystemWatcher,
-        vsCodeUri,
+        vscodeDirUri,
         handleEvent,
       );
-      assert.deepEqual(watcher._fileSystemWatchers[vsCodeUri], [
+      assert.deepEqual(watcher._privateState.fileSystemWatchers[`${vscodeDirUri}`], [
         didChange,
         didCreate,
         didDelete,
@@ -165,7 +198,9 @@ suite('watcher Suite', () => {
 
   suite('disposeWorkspaceWatcher Suite', () => {
     test('Should invoke dispose on all disposables for workspace', () => {
-      watcher.disposeWorkspaceWatcher('first');
+      watcher.disposeWorkspaceWatcher(
+        /** @type {import('vscode').Uri} */ (/** @type {unknown} */ ('first')),
+      );
       assert.isTrue(firstWatcherDisposeStub.calledOnce);
       assert.isTrue(secondWatcherDisposeStub.calledOnce);
       assert.isFalse(thirdWatcherDisposeStub.calledOnce);
