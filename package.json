@@ -126,14 +126,14 @@
     "mocha": "^10.2.0",
     "mocha-multi-reporters": "^1.5.1",
     "mocha-sonarqube-reporter": "^1.0.2",
-    "prettier": "^2.8.8",
+    "prettier": "^3.0.1",
     "rimraf": "^5.0.1",
     "sinon": "^15.2.0",
     "vsce": "^2.15.0"
   },
   "dependencies": {
-    "jsonc-parser": "^3.2.0",
-    "deepmerge": "^4.3.1"
+    "deepmerge": "^4.3.1",
+    "jsonc-parser": "^3.2.0"
   },
   "scripts": {
     "build": "npm test",

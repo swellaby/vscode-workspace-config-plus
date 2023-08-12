@@ -22,8 +22,8 @@ suite('lib Suite', () => {
       lib.deactivate();
       assert.isTrue(
         logInfoStub.calledOnceWithExactly(
-          'Deactivating and disposing all watchers'
-        )
+          'Deactivating and disposing all watchers',
+        ),
       );
       assert.isTrue(disposeAllWatchersStub.calledOnce);
       assert.isTrue(logDisposeStub.calledOnce);
@@ -39,11 +39,11 @@ suite('lib Suite', () => {
     setup(() => {
       initializeWorkspaceFolderStub = Sinon.stub(
         lib,
-        'initializeWorkspaceFolder'
+        'initializeWorkspaceFolder',
       );
       disposeWorkspaceWatcherStub = Sinon.stub(
         watcher,
-        'disposeWorkspaceWatcher'
+        'disposeWorkspaceWatcher',
       );
     });
 
@@ -84,10 +84,10 @@ suite('lib Suite', () => {
       lib.handleWorkspaceFolderUpdates({ removed });
       assert.isTrue(disposeWorkspaceWatcherStub.calledTwice);
       assert.isTrue(
-        disposeWorkspaceWatcherStub.calledWithExactly(removed[0].uri)
+        disposeWorkspaceWatcherStub.calledWithExactly(removed[0].uri),
       );
       assert.isTrue(
-        disposeWorkspaceWatcherStub.calledWithExactly(removed[1].uri)
+        disposeWorkspaceWatcherStub.calledWithExactly(removed[1].uri),
       );
     });
   });
@@ -100,7 +100,7 @@ suite('lib Suite', () => {
       const logInitializeStub = Sinon.stub(log, 'initialize');
       lib.initializeLog(createOutputChannel);
       assert.isTrue(
-        logInitializeStub.calledOnceWithExactly(createOutputChannel)
+        logInitializeStub.calledOnceWithExactly(createOutputChannel),
       );
     });
   });
@@ -124,7 +124,7 @@ suite('lib Suite', () => {
     setup(() => {
       generateFileSystemWatcherStub = Sinon.stub(
         watcher,
-        'generateFileSystemWatcher'
+        'generateFileSystemWatcher',
       );
       mergeConfigFilesStub = Sinon.stub(fileHandler, 'mergeConfigFiles');
       joinPathStub = Sinon.stub(callbacks, 'joinPath');
@@ -133,7 +133,7 @@ suite('lib Suite', () => {
         .callsFake(() => workspaceVscodeDirUri);
       createRelativePatternStub = Sinon.stub(
         callbacks,
-        'createRelativePattern'
+        'createRelativePattern',
       );
     });
 
@@ -146,7 +146,7 @@ suite('lib Suite', () => {
           createFileSystemWatcher,
           readFile,
           writeFile,
-        })
+        }),
       );
     };
 
@@ -156,7 +156,7 @@ suite('lib Suite', () => {
           ...data.uris,
           readFile,
           writeFile,
-        })
+        }),
       );
     };
 
@@ -171,7 +171,7 @@ suite('lib Suite', () => {
       createRelativePatternStub
         .withArgs(
           workspaceVscodeDirUri,
-          '{settings.local,settings.shared}.json'
+          '{settings.local,settings.shared}.json',
         )
         .callsFake(() => pattern);
       joinPathStub

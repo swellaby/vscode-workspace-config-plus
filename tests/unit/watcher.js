@@ -61,7 +61,7 @@ suite('watcher Suite', () => {
       clock.tick(initialTime);
       registerSharedFileSystemWatcherStub = Sinon.stub(
         watcher,
-        '_registerSharedFileSystemWatcher'
+        '_registerSharedFileSystemWatcher',
       ).callsFake((_g, _c, _f, cb) => {
         handleFileEvent = cb;
       });
@@ -123,18 +123,18 @@ suite('watcher Suite', () => {
     setup(() => {
       createFileSystemWatcherStub = Sinon.stub(
         callbacks,
-        'createFileSystemWatcher'
+        'createFileSystemWatcher',
       )
         .withArgs(pattern)
         .callsFake(() => fileSystemWatcher);
       onDidChangeStub = Sinon.stub(fileSystemWatcher, 'onDidChange').callsFake(
-        () => didChange
+        () => didChange,
       );
       onDidCreateStub = Sinon.stub(fileSystemWatcher, 'onDidCreate').callsFake(
-        () => didCreate
+        () => didCreate,
       );
       onDidDeleteStub = Sinon.stub(fileSystemWatcher, 'onDidDelete').callsFake(
-        () => didDelete
+        () => didDelete,
       );
     });
 
@@ -143,7 +143,7 @@ suite('watcher Suite', () => {
         pattern,
         callbacks.createFileSystemWatcher,
         vsCodeUri,
-        handleEvent
+        handleEvent,
       );
       assert.deepEqual(watcher._fileSystemWatchers[vsCodeUri], [
         didChange,

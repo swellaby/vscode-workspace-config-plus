@@ -40,7 +40,7 @@ const activate = () => {
       joinPath,
       readFile,
       writeFile,
-    })
+    }),
   );
   workspace.onDidChangeWorkspaceFolders(({ added, removed }) =>
     handleWorkspaceFolderUpdates({
@@ -51,7 +51,7 @@ const activate = () => {
       joinPath,
       readFile,
       writeFile,
-    })
+    }),
   );
 };
 

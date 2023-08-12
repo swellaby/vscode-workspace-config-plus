@@ -20,7 +20,7 @@ const initializeWorkspaceFolder = ({
     const localFile = `${configFile}.local`;
     const globPattern = createRelativePattern(
       workspaceVscodeDirUri,
-      `{${localFile},${sharedFile}}.json`
+      `{${localFile},${sharedFile}}.json`,
     );
     const vscodeFileUri = joinPath(workspaceVscodeDirUri, `${configFile}.json`);
     const sharedFileUri = joinPath(workspaceVscodeDirUri, `${sharedFile}.json`);
@@ -63,7 +63,7 @@ const handleWorkspaceFolderUpdates = ({
         joinPath,
         readFile,
         writeFile,
-      })
+      }),
     );
   }
   if (removed && Array.isArray(removed)) {

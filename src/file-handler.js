@@ -66,7 +66,7 @@ const mergeConfigFiles = async ({
 
     const vscodeFileContents = await loadConfigFromFile(
       vscodeFileUri,
-      readFile
+      readFile,
     );
     const merged = getMergedConfigs({ sharedConfig, localConfig });
 
@@ -79,9 +79,9 @@ const mergeConfigFiles = async ({
     await writeFile(
       vscodeFileUri,
       Buffer.from(
-        JSON.stringify({ ...vscodeFileContents, ...merged }, null, 2)
+        JSON.stringify({ ...vscodeFileContents, ...merged }, null, 2),
       ),
-      { create: true, overwrite: true }
+      { create: true, overwrite: true },
     );
   } catch (e) {
     log.error(e.message);

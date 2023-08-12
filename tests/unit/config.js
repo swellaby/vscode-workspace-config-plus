@@ -17,7 +17,7 @@ suite('config Suite', () => {
     const arrayMergeConfig = config[fileHandler._arrayMergeKey];
     assert.deepEqual(
       arrayMergeConfig.default,
-      fileHandler._arrayMergeDefaultValue
+      fileHandler._arrayMergeDefaultValue,
     );
     assert.deepEqual(arrayMergeConfig.enum, ['combine', 'overwrite']);
   });

@@ -8,7 +8,7 @@ const _registerSharedFileSystemWatcher = (
   globPattern,
   createFileSystemWatcher,
   workspaceUri,
-  onFileSystemEventHandler
+  onFileSystemEventHandler,
 ) => {
   const fileSystemChangeWatcher = createFileSystemWatcher(globPattern);
   module.exports._fileSystemWatchers[workspaceUri] = [
@@ -53,7 +53,7 @@ const generateFileSystemWatcher = ({
     globPattern,
     createFileSystemWatcher,
     folderUri,
-    handleFileEvent
+    handleFileEvent,
   );
 };
 

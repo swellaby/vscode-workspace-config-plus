@@ -5,7 +5,7 @@ let _outputChannel;
 const write = (msg, logLevel) => {
   const dateString = new Date().toLocaleString('sv');
   module.exports._outputChannel.appendLine(
-    `[${dateString}] [${logLevel}] ${msg}`
+    `[${dateString}] [${logLevel}] ${msg}`,
   );
 };
 

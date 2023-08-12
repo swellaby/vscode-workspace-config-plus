@@ -40,7 +40,7 @@ suite('file handler Suite', () => {
     test('Should return undefined when file does not exist', async () => {
       readFileStub.callsFake(() => undefined);
       assert.isUndefined(
-        await _loadConfigFromFile(fileUri, callbacks.readFile)
+        await _loadConfigFromFile(fileUri, callbacks.readFile),
       );
       assert.isFalse(parseStub.called);
     });
@@ -48,7 +48,7 @@ suite('file handler Suite', () => {
     test('Should return config object on valid json/jsonc', async () => {
       assert.deepEqual(
         await _loadConfigFromFile(fileUri, callbacks.readFile),
-        config
+        config,
       );
     });
 
@@ -62,7 +62,7 @@ suite('file handler Suite', () => {
       } catch (e) {
         assert.deepEqual(
           e.message,
-          `Failed to parse contents of: ${fileUri.fsPath}`
+          `Failed to parse contents of: ${fileUri.fsPath}`,
         );
       }
     });
@@ -128,7 +128,7 @@ suite('file handler Suite', () => {
       ...expArrayCombineConfig,
     };
     const expArrayCombineConfigNoExplicitMerge = JSON.parse(
-      JSON.stringify(finalExpArrayCombineConfig)
+      JSON.stringify(finalExpArrayCombineConfig),
     );
     delete expArrayCombineConfigNoExplicitMerge[fileHandler._arrayMergeKey];
 
@@ -144,7 +144,7 @@ suite('file handler Suite', () => {
       [fileHandler._arrayMergeKey]: 'OVERwrite',
     };
     const sharedConfigNoArrayMerge = JSON.parse(
-      JSON.stringify(sharedArrayOverwriteConfig)
+      JSON.stringify(sharedArrayOverwriteConfig),
     );
     delete sharedConfigNoArrayMerge[fileHandler._arrayMergeKey];
     const localArrayOverwriteConfig = {
@@ -159,7 +159,7 @@ suite('file handler Suite', () => {
       baz: false,
     };
     const localConfigNoArrayMerge = JSON.parse(
-      JSON.stringify(localArrayOverwriteConfig)
+      JSON.stringify(localArrayOverwriteConfig),
     );
     delete localConfigNoArrayMerge[fileHandler._arrayMergeKey];
     const expArrayOverwriteConfig = {
@@ -180,7 +180,7 @@ suite('file handler Suite', () => {
       loadConfigFromFileStub = Sinon.stub(fileHandler, '_loadConfigFromFile');
       loadVSConfigFromFileStub = loadConfigFromFileStub.withArgs(
         vscodeFileUri,
-        callbacks.readFile
+        callbacks.readFile,
       );
       loadConfigFromFileStub
         .withArgs(sharedFileUri, callbacks.readFile)
@@ -240,8 +240,8 @@ suite('file handler Suite', () => {
       assert.isTrue(loadConfigFromFileStub.calledThrice);
       assert.isTrue(
         logInfoStub.calledOnceWithExactly(
-          `Updating config in ${vscodeFileUri.fsPath}`
-        )
+          `Updating config in ${vscodeFileUri.fsPath}`,
+        ),
       );
       assert.isTrue(
         writeFileStub.calledOnceWithExactly(
@@ -250,11 +250,11 @@ suite('file handler Suite', () => {
             JSON.stringify(
               { ...vscodeConfig, ...sharedArrayCombineConfig },
               null,
-              2
-            )
+              2,
+            ),
           ),
-          { create: true, overwrite: true }
-        )
+          { create: true, overwrite: true },
+        ),
       );
     });
 
@@ -271,8 +271,8 @@ suite('file handler Suite', () => {
       assert.isTrue(loadConfigFromFileStub.calledThrice);
       assert.isTrue(
         logInfoStub.calledOnceWithExactly(
-          `Updating config in ${vscodeFileUri.fsPath}`
-        )
+          `Updating config in ${vscodeFileUri.fsPath}`,
+        ),
       );
       assert.isTrue(
         writeFileStub.calledOnceWithExactly(
@@ -281,11 +281,11 @@ suite('file handler Suite', () => {
             JSON.stringify(
               { ...vscodeConfig, ...localArrayCombineConfig },
               null,
-              2
-            )
+              2,
+            ),
           ),
-          { create: true, overwrite: true }
-        )
+          { create: true, overwrite: true },
+        ),
       );
     });
 
@@ -299,15 +299,15 @@ suite('file handler Suite', () => {
       assert.isTrue(loadConfigFromFileStub.calledThrice);
       assert.isTrue(
         logInfoStub.calledOnceWithExactly(
-          `Updating config in ${vscodeFileUri.fsPath}`
-        )
+          `Updating config in ${vscodeFileUri.fsPath}`,
+        ),
       );
       assert.isTrue(
         writeFileStub.calledOnceWithExactly(
           vscodeFileUri,
           Buffer.from(JSON.stringify(finalExpArrayCombineConfig, null, 2)),
-          { create: true, overwrite: true }
-        )
+          { create: true, overwrite: true },
+        ),
       );
     });
 
@@ -327,15 +327,15 @@ suite('file handler Suite', () => {
       assert.isTrue(loadConfigFromFileStub.calledThrice);
       assert.isTrue(
         logInfoStub.calledOnceWithExactly(
-          `Updating config in ${vscodeFileUri.fsPath}`
-        )
+          `Updating config in ${vscodeFileUri.fsPath}`,
+        ),
       );
       assert.isTrue(
         writeFileStub.calledOnceWithExactly(
           vscodeFileUri,
           Buffer.from(JSON.stringify(finalExpArrayCombineConfig, null, 2)),
-          { create: true, overwrite: true }
-        )
+          { create: true, overwrite: true },
+        ),
       );
     });
 
@@ -352,15 +352,15 @@ suite('file handler Suite', () => {
       assert.isTrue(loadConfigFromFileStub.calledThrice);
       assert.isTrue(
         logInfoStub.calledOnceWithExactly(
-          `Updating config in ${vscodeFileUri.fsPath}`
-        )
+          `Updating config in ${vscodeFileUri.fsPath}`,
+        ),
       );
       assert.isTrue(
         writeFileStub.calledOnceWithExactly(
           vscodeFileUri,
           Buffer.from(JSON.stringify(expArrayOverwriteConfig, null, 2)),
-          { create: true, overwrite: true }
-        )
+          { create: true, overwrite: true },
+        ),
       );
     });
 
@@ -380,17 +380,17 @@ suite('file handler Suite', () => {
       assert.isTrue(loadConfigFromFileStub.calledThrice);
       assert.isTrue(
         logInfoStub.calledOnceWithExactly(
-          `Updating config in ${vscodeFileUri.fsPath}`
-        )
+          `Updating config in ${vscodeFileUri.fsPath}`,
+        ),
       );
       assert.isTrue(
         writeFileStub.calledOnceWithExactly(
           vscodeFileUri,
           Buffer.from(
-            JSON.stringify(expArrayCombineConfigNoExplicitMerge, null, 2)
+            JSON.stringify(expArrayCombineConfigNoExplicitMerge, null, 2),
           ),
-          { create: true, overwrite: true }
-        )
+          { create: true, overwrite: true },
+        ),
       );
     });
 
@@ -399,11 +399,11 @@ suite('file handler Suite', () => {
         return Promise.resolve(finalExpArrayCombineConfig);
       });
       const updatedLocalConfig = JSON.parse(
-        JSON.stringify(localArrayCombineConfig)
+        JSON.stringify(localArrayCombineConfig),
       );
       updatedLocalConfig.cow = 'moo';
       const secondExpectedConfig = JSON.parse(
-        JSON.stringify(finalExpArrayCombineConfig)
+        JSON.stringify(finalExpArrayCombineConfig),
       );
       secondExpectedConfig.cow = 'moo';
       loadConfigFromFileStub
@@ -426,22 +426,22 @@ suite('file handler Suite', () => {
       assert.deepEqual(loadConfigFromFileStub.callCount, 6);
       assert.isTrue(logInfoStub.calledTwice);
       assert.isTrue(
-        logInfoStub.calledWith(`Updating config in ${vscodeFileUri.fsPath}`)
+        logInfoStub.calledWith(`Updating config in ${vscodeFileUri.fsPath}`),
       );
       assert.isTrue(writeFileStub.calledTwice);
       assert.isTrue(
         writeFileStub.firstCall.calledWithExactly(
           vscodeFileUri,
           Buffer.from(JSON.stringify(finalExpArrayCombineConfig, null, 2)),
-          { create: true, overwrite: true }
-        )
+          { create: true, overwrite: true },
+        ),
       );
       assert.isTrue(
         writeFileStub.secondCall.calledWithExactly(
           vscodeFileUri,
           Buffer.from(JSON.stringify(secondExpectedConfig, null, 2)),
-          { create: true, overwrite: true }
-        )
+          { create: true, overwrite: true },
+        ),
       );
     });
 
@@ -461,7 +461,7 @@ suite('file handler Suite', () => {
     test('Throws correct error on invalid type for array merge behavior', async () => {
       const arrayMerge = 2;
       const invalidArrayMergeTypeConfig = JSON.parse(
-        JSON.stringify(localArrayCombineConfig)
+        JSON.stringify(localArrayCombineConfig),
       );
       invalidArrayMergeTypeConfig[fileHandler._arrayMergeKey] = arrayMerge;
       loadConfigFromFileStub
@@ -480,7 +480,7 @@ suite('file handler Suite', () => {
     test('Throws correct error on invalid value for array merge behavior', async () => {
       const arrayMerge = 'shuffle';
       const invalidArrayMergeValueConfig = JSON.parse(
-        JSON.stringify(localArrayCombineConfig)
+        JSON.stringify(localArrayCombineConfig),
       );
       invalidArrayMergeValueConfig[fileHandler._arrayMergeKey] = arrayMerge;
       loadConfigFromFileStub
