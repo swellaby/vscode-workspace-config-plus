@@ -8,11 +8,17 @@ const log = require('./log');
 const _arrayMergeKey = 'workspaceConfigPlus.arrayMerge';
 const _arrayMergeDefaultValue = 'combine';
 
+/**
+ * @param {import('vscode').Uri} fileUri
+ * @param {import('./wrappers').readFile} readFile
+ * @returns {Promise<any | undefined>}
+ */
 const _loadConfigFromFile = async (fileUri, readFile) => {
   const contents = await readFile(fileUri);
   if (!contents) {
     return undefined;
   }
+  /** @type {jsoncParser.ParseError[]} */
   const errors = [];
   const config = jsoncParser.parse(contents.toString(), errors, {
     allowTrailingComma: true,
@@ -23,6 +29,13 @@ const _loadConfigFromFile = async (fileUri, readFile) => {
   return config;
 };
 
+/**
+ * @template {{ [_arrayMergeKey]: string }} T
+ * @param {object} args
+ * @param {Partial<T>} args.sharedConfig
+ * @param {Partial<T>} args.localConfig
+ * @returns {T | undefined}
+ */
 const getMergedConfigs = ({ sharedConfig, localConfig }) => {
   const shared = sharedConfig || {};
   const local = localConfig || {};
@@ -34,6 +47,7 @@ const getMergedConfigs = ({ sharedConfig, localConfig }) => {
   }
 
   arrayMerge = arrayMerge.toLowerCase();
+  /** @type deepMerge.Options */
   let options = {};
   if (arrayMerge == 'overwrite') {
     options.arrayMerge = (_dest, source, _options) => source;
@@ -43,6 +57,15 @@ const getMergedConfigs = ({ sharedConfig, localConfig }) => {
   return deepMerge(shared, local, options);
 };
 
+/**
+ * @param {object} args
+ * @param {import('vscode').Uri} args.vscodeFileUri
+ * @param {import('vscode').Uri} args.sharedFileUri
+ * @param {import('vscode').Uri} args.localFileUri
+ * @param {import('./wrappers').readFile} args.readFile
+ * @param {import('./wrappers').writeFile} args.writeFile
+ * @returns {Promise<void>}
+ */
 // This function does exceed our preferred ceiling for statement counts
 // but worth an override here for readability. However, we should split
 // this up if we end up needing to add anything else to it.

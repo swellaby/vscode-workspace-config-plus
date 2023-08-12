@@ -6,6 +6,16 @@ const log = require('./log');
 
 const workspaceConfigFileNames = ['launch', 'settings', 'tasks'];
 
+/**
+ * @param {object} args
+ * @param {import('vscode').Uri} args.folderUri
+ * @param {import('./wrappers').createFileSystemWatcher} args.createFileSystemWatcher
+ * @param {import('./wrappers').createRelativePattern} args.createRelativePattern
+ * @param {import('./wrappers').joinPath} args.joinPath
+ * @param {import('./wrappers').readFile} args.readFile
+ * @param {import('./wrappers').writeFile} args.writeFile
+ * @returns {void}
+ */
 const initializeWorkspaceFolder = ({
   folderUri,
   createFileSystemWatcher,
@@ -44,7 +54,17 @@ const initializeWorkspaceFolder = ({
     });
   });
 };
-
+/**
+ * @param {object} args
+ * @param {readonly import('vscode').WorkspaceFolder[]} args.added
+ * @param {readonly import('vscode').WorkspaceFolder[]} args.removed
+ * @param {import('./wrappers').createFileSystemWatcher} args.createFileSystemWatcher
+ * @param {import('./wrappers').createRelativePattern} args.createRelativePattern
+ * @param {import('./wrappers').joinPath} args.joinPath
+ * @param {import('./wrappers').readFile} args.readFile
+ * @param {import('./wrappers').writeFile} args.writeFile
+ * @returns {void}
+ */
 const handleWorkspaceFolderUpdates = ({
   added,
   removed,
@@ -55,7 +75,7 @@ const handleWorkspaceFolderUpdates = ({
   writeFile,
 }) => {
   if (added && Array.isArray(added)) {
-    added.forEach(f =>
+    for (const f of /** @type {WorkspaceFolder[]} */ (added)) {
       module.exports.initializeWorkspaceFolder({
         folderUri: f.uri,
         createFileSystemWatcher,
@@ -63,18 +83,25 @@ const handleWorkspaceFolderUpdates = ({
         joinPath,
         readFile,
         writeFile,
-      }),
-    );
+      });
+    }
   }
   if (removed && Array.isArray(removed)) {
-    removed.forEach(f => watcher.disposeWorkspaceWatcher(f.uri));
+    for (const f of /** @type {WorkspaceFolder[]} */ (removed)) {
+      watcher.disposeWorkspaceWatcher(f.uri);
+    }
   }
 };
 
+/**
+ * @param {(name: string) => import('vscode').OutputChannel} createOutputChannel
+ * @returns {void}
+ */
 const initializeLog = createOutputChannel => {
   log.initialize(createOutputChannel);
 };
 
+/** @returns {void} */
 const deactivate = () => {
   log.info('Deactivating and disposing all watchers');
   watcher.disposeAllWatchers();

@@ -1,8 +1,24 @@
 'use strict';
 
+/**
+ * @param {any} _a
+ * @param {any} _b
+ */
 const createFileSystemWatcher = (_a, _b) => {};
+/** @param {any} _c */
 const createRelativePattern = _c => {};
+/**
+ * @param {any} _d
+ * @param {any} _e
+ * @param {any} _f
+ */
 const joinPath = (_d, _e, _f) => {};
+/**
+ * @param {any} _g
+ * @param {any} _h
+ * @param {any} _i
+ * @param {any} _j
+ */
 const readFile = (_g, _h, _i, _j) => {};
 const writeFile = () => {};
 const callbacks = {

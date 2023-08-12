@@ -2,8 +2,16 @@
 
 const fileHandler = require('./file-handler');
 
+/** @type {{ [index: string]: import('vscode').Disposable[] }} */
 const _fileSystemWatchers = {};
 
+/**
+ * @param {import('vscode').GlobPattern} globPattern
+ * @param {import('./wrappers').createFileSystemWatcher} createFileSystemWatcher
+ * @param {import('vscode').Uri} workspaceUri
+ * @param {(e: import('vscode').Uri) => any} onFileSystemEventHandler
+ * @returns {void}
+ */
 const _registerSharedFileSystemWatcher = (
   globPattern,
   createFileSystemWatcher,
@@ -18,6 +26,18 @@ const _registerSharedFileSystemWatcher = (
   ];
 };
 
+/**
+ * @param {object} args
+ * @param {import('vscode').GlobPattern} args.globPattern
+ * @param {import('./wrappers').createFileSystemWatcher} args.createFileSystemWatcher
+ * @param {import('./wrappers').readFile} args.readFile
+ * @param {import('./wrappers').writeFile} args.writeFile
+ * @param {import('vscode').Uri} args.folderUri
+ * @param {import('vscode').Uri} args.vscodeFileUri
+ * @param {import('vscode').Uri} args.sharedFileUri
+ * @param {import('vscode').Uri} args.localFileUri
+ * @returns {void}
+ */
 const generateFileSystemWatcher = ({
   globPattern,
   createFileSystemWatcher,
@@ -28,7 +48,12 @@ const generateFileSystemWatcher = ({
   sharedFileUri,
   localFileUri,
 }) => {
+  /** @type {{ [index: string]: { prior: number } }} */
   const cache = {};
+  /**
+   * @param {import('vscode').Uri} e
+   * @returns {Promise<void>}
+   */
   async function handleFileEvent(e) {
     const current = new Date().valueOf();
     let entry = cache[e];
@@ -57,12 +82,17 @@ const generateFileSystemWatcher = ({
   );
 };
 
+/**
+ * @param {import('vscode').Uri} workspaceUri
+ * @returns {void}
+ */
 const disposeWorkspaceWatcher = workspaceUri => {
   if (module.exports._fileSystemWatchers[workspaceUri]) {
     module.exports._fileSystemWatchers[workspaceUri].forEach(w => w.dispose());
   }
 };
 
+/** @returns {void} */
 const disposeAllWatchers = () => {
   Object.values(module.exports._fileSystemWatchers).forEach(watchers => {
     watchers.forEach(w => w.dispose());
