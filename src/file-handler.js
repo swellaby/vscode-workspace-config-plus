@@ -7,12 +7,20 @@ const log = require('./log');
 
 const _arrayMergeKey = 'workspaceConfigPlus.arrayMerge';
 const _arrayMergeDefaultValue = 'combine';
+const _replaceMergedSymlinksKey = 'workspaceConfigPlus.replaceMergedSymlinks';
+const _replaceMergedSymlinksDefaultValue = false;
 
+/**
+ * @param {import('vscode').Uri} fileUri
+ * @param {import('./wrappers').readFile} readFile
+ * @returns {Promise<any | undefined>}
+ */
 const _loadConfigFromFile = async (fileUri, readFile) => {
   const contents = await readFile(fileUri);
   if (!contents) {
     return undefined;
   }
+  /** @type {jsoncParser.ParseError[]} */
   const errors = [];
   const config = jsoncParser.parse(contents.toString(), errors, {
     allowTrailingComma: true,
@@ -23,26 +31,52 @@ const _loadConfigFromFile = async (fileUri, readFile) => {
   return config;
 };
 
+/**
+ * @template {{ [_arrayMergeKey]: string }} T
+ * @param {object} args
+ * @param {Partial<T>} args.sharedConfig
+ * @param {Partial<T>} args.localConfig
+ * @returns {T | undefined}
+ */
 const getMergedConfigs = ({ sharedConfig, localConfig }) => {
   const shared = sharedConfig || {};
   const local = localConfig || {};
   let arrayMerge =
     local[_arrayMergeKey] || shared[_arrayMergeKey] || _arrayMergeDefaultValue;
-  const invalidValueErrorMessage = `Invalid value for 'arrayMerge' setting: '${arrayMerge}'. Must be 'overwrite' or 'combine'`;
+  const invalidValueErrorMessage = () =>
+    `Invalid value for ${JSON.stringify(
+      _arrayMergeKey,
+    )} setting: ${JSON.stringify(
+      arrayMerge,
+    )}. Must be "overwrite" or "combine"`;
   if (typeof arrayMerge != 'string') {
-    throw new Error(invalidValueErrorMessage);
+    throw new Error(invalidValueErrorMessage());
   }
 
   arrayMerge = arrayMerge.toLowerCase();
+  /** @type deepMerge.Options */
   let options = {};
   if (arrayMerge == 'overwrite') {
     options.arrayMerge = (_dest, source, _options) => source;
   } else if (arrayMerge !== 'combine') {
-    throw new Error(invalidValueErrorMessage);
+    throw new Error(invalidValueErrorMessage());
   }
   return deepMerge(shared, local, options);
 };
 
+/**
+ * @param {object} args
+ * @param {import('vscode').Uri} args.vscodeFileUri
+ * @param {import('vscode').Uri} args.sharedFileUri
+ * @param {import('vscode').Uri} args.localFileUri
+ * @param {typeof import('./wrappers').FileType} args.FileType
+ * @param {import('./wrappers').stat} args.stat
+ * @param {import('./wrappers').readFile} args.readFile
+ * @param {import('./wrappers').writeFile} args.writeFile
+ * @param {import('./wrappers').delete} args.delete
+ * @param {import('./wrappers').getWorkspaceConfiguration} args.getWorkspaceConfiguration
+ * @returns {Promise<void>}
+ */
 // This function does exceed our preferred ceiling for statement counts
 // but worth an override here for readability. However, we should split
 // this up if we end up needing to add anything else to it.
@@ -51,8 +85,12 @@ const mergeConfigFiles = async ({
   vscodeFileUri,
   sharedFileUri,
   localFileUri,
+  FileType,
+  stat,
   readFile,
   writeFile,
+  delete: delete_,
+  getWorkspaceConfiguration,
 }) => {
   const loadConfigFromFile = module.exports._loadConfigFromFile;
   try {
@@ -64,10 +102,29 @@ const mergeConfigFiles = async ({
       return;
     }
 
-    const vscodeFileContents = await loadConfigFromFile(
+    let vscodeFileContents = await loadConfigFromFile(vscodeFileUri, readFile);
+    const replaceMergedSymlinks = getWorkspaceConfiguration(
+      _replaceMergedSymlinksKey,
+      _replaceMergedSymlinksDefaultValue,
       vscodeFileUri,
-      readFile
     );
+    if (typeof replaceMergedSymlinks !== 'boolean') {
+      const invalidValueErrorMessage = `Invalid value for ${JSON.stringify(
+        _replaceMergedSymlinksKey,
+      )} setting: ${JSON.stringify(
+        replaceMergedSymlinks,
+      )}. Must be true or false`;
+      throw new Error(invalidValueErrorMessage);
+    }
+    if (
+      replaceMergedSymlinks &&
+      ((await stat(vscodeFileUri)).type & FileType.SymbolicLink) !== 0 &&
+      isDeepStrictEqual(vscodeFileContents, sharedConfig)
+    ) {
+      log.info(`Deleting matching symlink at ${vscodeFileUri.fsPath}`);
+      await delete_(vscodeFileUri, { recursive: false, useTrash: false });
+      vscodeFileContents = {};
+    }
     const merged = getMergedConfigs({ sharedConfig, localConfig });
 
     // Avoid rewriting the file if there are no changes to be applied
@@ -79,12 +136,14 @@ const mergeConfigFiles = async ({
     await writeFile(
       vscodeFileUri,
       Buffer.from(
-        JSON.stringify({ ...vscodeFileContents, ...merged }, null, 2)
+        JSON.stringify({ ...vscodeFileContents, ...merged }, null, 2),
       ),
-      { create: true, overwrite: true }
+      { create: true, overwrite: true },
     );
   } catch (e) {
-    log.error(e.message);
+    if (e instanceof Error) {
+      log.error(`${e.name}: ${e.message}`);
+    }
     log.debug(e);
   }
 };
@@ -95,4 +154,6 @@ module.exports = {
   _loadConfigFromFile,
   _arrayMergeKey,
   _arrayMergeDefaultValue,
+  _replaceMergedSymlinksKey,
+  _replaceMergedSymlinksDefaultValue,
 };

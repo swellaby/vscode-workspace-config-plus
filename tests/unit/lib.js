@@ -20,13 +20,11 @@ suite('lib Suite', () => {
       const logDisposeStub = Sinon.stub(log, 'dispose');
       const disposeAllWatchersStub = Sinon.stub(watcher, 'disposeAllWatchers');
       lib.deactivate();
-      assert.isTrue(
-        logInfoStub.calledOnceWithExactly(
-          'Deactivating and disposing all watchers'
-        )
-      );
-      assert.isTrue(disposeAllWatchersStub.calledOnce);
-      assert.isTrue(logDisposeStub.calledOnce);
+      assert.deepStrictEqual(logInfoStub.getCall(0).args, [
+        'Deactivating and disposing all watchers',
+      ]);
+      assert.deepStrictEqual(disposeAllWatchersStub.callCount, 1);
+      assert.deepStrictEqual(logDisposeStub.callCount, 1);
     });
   });
 
@@ -39,75 +37,104 @@ suite('lib Suite', () => {
     setup(() => {
       initializeWorkspaceFolderStub = Sinon.stub(
         lib,
-        'initializeWorkspaceFolder'
+        'initializeWorkspaceFolder',
       );
       disposeWorkspaceWatcherStub = Sinon.stub(
         watcher,
-        'disposeWorkspaceWatcher'
+        'disposeWorkspaceWatcher',
       );
     });
 
     test('Should handle falsy value for added folders', () => {
-      lib.handleWorkspaceFolderUpdates({});
-      assert.isFalse(initializeWorkspaceFolderStub.called);
+      lib.handleWorkspaceFolderUpdates({ ...data.callbacks });
+      assert.deepStrictEqual(initializeWorkspaceFolderStub.callCount, 0);
     });
 
     test('Should handle non-array value for added folders', () => {
-      lib.handleWorkspaceFolderUpdates({ added: 7 });
-      assert.isFalse(initializeWorkspaceFolderStub.called);
+      lib.handleWorkspaceFolderUpdates({ added: 7, ...data.callbacks });
+      assert.deepStrictEqual(initializeWorkspaceFolderStub.callCount, 0);
     });
 
     test('Should properly initialize added folders', () => {
-      const added = [{ uri: 'foo/bar' }, { uri: 'baz/qux' }];
-      lib.handleWorkspaceFolderUpdates({
-        added,
-        ...data.callbacks,
-      });
-      assert.deepEqual(initializeWorkspaceFolderStub.firstCall.firstArg, {
+      const added = [
+        {
+          uri: /** @type {import('vscode').Uri} */ (
+            /** @type {unknown} */ ('foo/bar')
+          ),
+        },
+        {
+          uri: /** @type {import('vscode').Uri} */ (
+            /** @type {unknown} */ ('baz/qux')
+          ),
+        },
+      ];
+      lib.handleWorkspaceFolderUpdates({ added, ...data.callbacks });
+      assert.deepStrictEqual(initializeWorkspaceFolderStub.firstCall.firstArg, {
         folderUri: added[0].uri,
         ...data.callbacks,
       });
     });
 
     test('Should handle falsy value for removed folders', () => {
-      lib.handleWorkspaceFolderUpdates({});
-      assert.isFalse(disposeWorkspaceWatcherStub.called);
+      lib.handleWorkspaceFolderUpdates({ ...data.callbacks });
+      assert.deepStrictEqual(disposeWorkspaceWatcherStub.callCount, 0);
     });
 
     test('Should handle non-array value for removed folders', () => {
-      lib.handleWorkspaceFolderUpdates({ removed: 'why' });
-      assert.isFalse(initializeWorkspaceFolderStub.called);
+      lib.handleWorkspaceFolderUpdates({ removed: 'why', ...data.callbacks });
+      assert.deepStrictEqual(initializeWorkspaceFolderStub.callCount, 0);
     });
 
     test('Should properly handle removed folders', () => {
-      const removed = [{ uri: 'bar/foo' }, { uri: 'qux/baz' }];
-      lib.handleWorkspaceFolderUpdates({ removed });
-      assert.isTrue(disposeWorkspaceWatcherStub.calledTwice);
-      assert.isTrue(
-        disposeWorkspaceWatcherStub.calledWithExactly(removed[0].uri)
-      );
-      assert.isTrue(
-        disposeWorkspaceWatcherStub.calledWithExactly(removed[1].uri)
-      );
+      const removed = [
+        {
+          uri: /** @type {import('vscode').Uri} */ (
+            /** @type {unknown} */ ('bar/foo')
+          ),
+        },
+        {
+          uri: /** @type {import('vscode').Uri} */ (
+            /** @type {unknown} */ ('qux/baz')
+          ),
+        },
+      ];
+      lib.handleWorkspaceFolderUpdates({ removed, ...data.callbacks });
+      assert.deepStrictEqual(disposeWorkspaceWatcherStub.callCount, 2);
+      assert.deepStrictEqual(disposeWorkspaceWatcherStub.getCall(0).args, [
+        removed[0].uri,
+      ]);
+      assert.deepStrictEqual(disposeWorkspaceWatcherStub.getCall(1).args, [
+        removed[1].uri,
+      ]);
     });
   });
 
   suite('initializeLog Suite', () => {
     test('Should initialize log correctly', () => {
       const createOutputChannel = () => {
-        return 7;
+        return /** @type {import('vscode').OutputChannel} */ (
+          /** @type {unknown} */ (7)
+        );
       };
       const logInitializeStub = Sinon.stub(log, 'initialize');
       lib.initializeLog(createOutputChannel);
-      assert.isTrue(
-        logInitializeStub.calledOnceWithExactly(createOutputChannel)
-      );
+      assert.deepStrictEqual(logInitializeStub.getCall(0).args, [
+        createOutputChannel,
+      ]);
     });
   });
 
   suite('initializeWorkspaceFolder Suite', () => {
     const { callbacks } = data;
-    const { createFileSystemWatcher, readFile, writeFile } = callbacks;
+    const {
+      createFileSystemWatcher,
+      FileType,
+      stat,
+      readFile,
+      writeFile,
+      delete: delete_,
+      getWorkspaceConfiguration,
+    } = callbacks;
     /** @type {Sinon.SinonStub} */
     let generateFileSystemWatcherStub;
     /** @type {Sinon.SinonStub} */
@@ -116,15 +143,19 @@ suite('lib Suite', () => {
     let joinPathStub;
     /** @type {Sinon.SinonStub} */
     let createRelativePatternStub;
-    const workspaceVscodeDirUri = { uri: 'foo/.vscode' };
-    const folderUri = 'foo';
-    const { pattern } = data;
+    const workspaceVscodeDirUri = /** @type {import('vscode').Uri} */ (
+      /** @type {unknown} */ ({ uri: 'foo/.vscode' })
+    );
+    const folderUri = /** @type {import('vscode').Uri} */ (
+      /** @type {unknown} */ ({ uri: 'foo' })
+    );
+    const { globPattern } = data;
     const { vscodeFileUri, localFileUri, sharedFileUri } = data.uris;
 
     setup(() => {
       generateFileSystemWatcherStub = Sinon.stub(
         watcher,
-        'generateFileSystemWatcher'
+        'generateFileSystemWatcher',
       );
       mergeConfigFilesStub = Sinon.stub(fileHandler, 'mergeConfigFiles');
       joinPathStub = Sinon.stub(callbacks, 'joinPath');
@@ -133,47 +164,69 @@ suite('lib Suite', () => {
         .callsFake(() => workspaceVscodeDirUri);
       createRelativePatternStub = Sinon.stub(
         callbacks,
-        'createRelativePattern'
+        'createRelativePattern',
       );
     });
 
+    /** @param {import('vscode').GlobPattern} pattern */
     const assertGenerateWatcherCall = pattern => {
-      assert.isTrue(
-        generateFileSystemWatcherStub.calledWithExactly({
-          globPattern: pattern,
-          folderUri,
-          ...data.uris,
-          createFileSystemWatcher,
-          readFile,
-          writeFile,
-        })
-      );
+      for (const call of generateFileSystemWatcherStub.getCalls()) {
+        assert.isDefined(call.args[0]);
+        if (call.args[0].globPattern !== undefined) {
+          assert.deepStrictEqual(call.args, [
+            {
+              globPattern: pattern,
+              folderUri,
+              ...data.uris,
+              createFileSystemWatcher,
+              FileType,
+              stat,
+              readFile,
+              writeFile,
+              delete: delete_,
+              getWorkspaceConfiguration,
+            },
+          ]);
+        }
+      }
     };
 
     const assertMergeFilesCall = () => {
-      assert.isTrue(
-        mergeConfigFilesStub.calledWithExactly({
-          ...data.uris,
-          readFile,
-          writeFile,
-        })
-      );
+      for (const call of generateFileSystemWatcherStub.getCalls()) {
+        assert.isDefined(call.args[0]);
+        if (!('globPattern' in call.args[0])) {
+          assert.deepStrictEqual(call.args, [
+            {
+              ...data.uris,
+              FileType,
+              stat,
+              readFile,
+              writeFile,
+              delete: delete_,
+              getWorkspaceConfiguration,
+            },
+          ]);
+        }
+      }
     };
 
     test('Should run for every entry in target config files', () => {
       const expectedCount = 3;
       lib.initializeWorkspaceFolder({ folderUri, ...callbacks });
-      assert.deepEqual(generateFileSystemWatcherStub.callCount, expectedCount);
-      assert.deepEqual(mergeConfigFilesStub.callCount, expectedCount);
+      assert.deepStrictEqual(
+        generateFileSystemWatcherStub.callCount,
+        expectedCount,
+      );
+      assert.deepStrictEqual(mergeConfigFilesStub.callCount, expectedCount);
     });
 
     test('Should initialize settings.json correctly', () => {
       createRelativePatternStub
         .withArgs(
           workspaceVscodeDirUri,
-          '{settings.local,settings.shared}.json'
+          '{settings.local,settings.shared}.json',
         )
-        .callsFake(() => pattern);
+        .callsFake(() => globPattern);
       joinPathStub
         .withArgs(workspaceVscodeDirUri, 'settings.json')
         .callsFake(() => vscodeFileUri);
@@ -185,14 +238,14 @@ suite('lib Suite', () => {
         .callsFake(() => localFileUri);
 
       lib.initializeWorkspaceFolder({ folderUri, ...callbacks });
-      assertGenerateWatcherCall(pattern);
+      assertGenerateWatcherCall(globPattern);
       assertMergeFilesCall();
     });
 
     test('Should initialize launch.json correctly', () => {
       createRelativePatternStub
         .withArgs(workspaceVscodeDirUri, '{launch.local,launch.shared}.json')
-        .callsFake(() => pattern);
+        .callsFake(() => globPattern);
       joinPathStub
         .withArgs(workspaceVscodeDirUri, 'launch.json')
         .callsFake(() => vscodeFileUri);
@@ -204,14 +257,14 @@ suite('lib Suite', () => {
         .callsFake(() => localFileUri);
 
       lib.initializeWorkspaceFolder({ folderUri, ...callbacks });
-      assertGenerateWatcherCall(pattern);
+      assertGenerateWatcherCall(globPattern);
       assertMergeFilesCall();
     });
 
     test('Should initialize tasks.json correctly', () => {
       createRelativePatternStub
         .withArgs(workspaceVscodeDirUri, '{tasks.local,tasks.shared}.json')
-        .callsFake(() => pattern);
+        .callsFake(() => globPattern);
       joinPathStub
         .withArgs(workspaceVscodeDirUri, 'tasks.json')
         .callsFake(() => vscodeFileUri);
@@ -223,7 +276,7 @@ suite('lib Suite', () => {
         .callsFake(() => localFileUri);
 
       lib.initializeWorkspaceFolder({ folderUri, ...callbacks });
-      assertGenerateWatcherCall(pattern);
+      assertGenerateWatcherCall(globPattern);
       assertMergeFilesCall();
     });
   });

@@ -1,0 +1,8 @@
+{
+  "compilerOptions": {
+    "emitDeclarationOnly": true,
+    "outDir": "build",
+    "rootDir": "."
+  },
+  "exclude": ["./node_modules", "./.vscode-test"]
+}

@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "checkJs": true,
+    "composite": true,
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "forceConsistentCasingInFileNames": true,
+    "lib": ["ES2020"],
+    "module": "CommonJS",
+    "moduleResolution": "Node",
+    "noEmitOnError": false,
+    "removeComments": false,
+    "sourceMap": true,
+    "strict": true,
+    "strictFunctionTypes": true,
+    "target": "ES2020",
+    "types": ["node"]
+  },
+  "extends": ["../base.tsconfig.json"],
+  "include": ["."],
+  "references": []
+}

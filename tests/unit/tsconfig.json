@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "resolveJsonModule": true,
+    "types": ["node", "mocha"]
+  },
+  "extends": ["../../src/tsconfig.json"],
+  "files": ["../../package.json", "../data.js"],
+  "include": ["."],
+  "references": [{ "path": "../../src" }]
+}

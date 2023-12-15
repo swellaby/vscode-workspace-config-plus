@@ -73,6 +73,12 @@
             "Performs a deep merge of array-type properties overlapping in both local and shared user settings, where the arrays are combined",
             "If both the local and shared files define a value for the same array-type property, then the array value in the local file is used and the shared array value is ignored"
           ]
+        },
+        "workspaceConfigPlus.replaceMergedSymlinks": {
+          "description": "Replace a merged configuration file when it's a symlink and the content matches its shared configuration file, instead of modifying the symlink target file",
+          "type": "boolean",
+          "scope": "resource",
+          "default": false
         }
       }
     }
@@ -120,23 +126,31 @@
   ],
   "devDependencies": {
     "@swellaby/eslint-config": "^2.0.0",
+    "@types/chai": "^4.3.5",
+    "@types/mocha": "^10.0.1",
+    "@types/node": "^18",
+    "@types/sinon": "^10.0.16",
+    "@types/vscode": "^1.49.0",
     "c8": "^8.0.1",
     "chai": "^4.3.10",
     "eslint": "^8.48.0",
     "mocha": "^10.2.0",
     "mocha-multi-reporters": "^1.5.1",
     "mocha-sonarqube-reporter": "^1.0.2",
-    "prettier": "^2.8.8",
+    "prettier": "^3.0.1",
+    "prettier-plugin-jsdoc": "^1.0.1",
     "rimraf": "^5.0.1",
     "sinon": "^15.2.0",
+    "typescript": "^5.1.6",
     "vsce": "^2.15.0"
   },
   "dependencies": {
-    "jsonc-parser": "^3.2.0",
-    "deepmerge": "^4.3.1"
+    "deepmerge": "^4.3.1",
+    "jsonc-parser": "^3.2.0"
   },
   "scripts": {
-    "build": "npm test",
+    "build": "npm run test",
+    "build:tsc": "tsc --build",
     "clean": "rimraf .testresults .coverage .vsix",
     "coverage": "npm run coverage:unit",
     "coverage:unit": "c8 -c tests/unit/.c8rc.json npm run test:unit",
