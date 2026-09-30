@@ -57,6 +57,12 @@ This extension is not an all-or-nothing proposition. Team members and contributo
 
 [multi-root-workspace-docs]: https://code.visualstudio.com/docs/editor/multi-root-workspaces
 
+#### Commands
+
+##### `workspaceConfigPlus.merge`
+
+Will merge all configs. May need to reload the resultant file from disk if it is currently loaded in the UI. No default keybind, you must add it yourself.
+
 #### Settings
 
 > Note that currently Workspace Config+ requires you to specify any of the below settings in your "workspace" files, and it doesn't yet support setting them at the user/machine global level.

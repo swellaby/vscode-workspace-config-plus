@@ -1,11 +1,12 @@
 'use strict';
 
-const { RelativePattern, Uri, workspace, window } = require('vscode');
+const { commands, RelativePattern, Uri, workspace, window } = require('vscode');
 const {
   deactivate,
   handleWorkspaceFolderUpdates,
   initializeLog,
   initializeWorkspaceFolder,
+  mergeConfigFiles,
 } = require('./lib');
 
 // The VS Code module is only readily available within a VS Code context
@@ -27,7 +28,7 @@ const readFile = fileUri =>
 const writeFile = (fileUri, contents, options) =>
   workspace.fs.writeFile(fileUri, contents, options);
 
-const activate = () => {
+const activate = (context) => {
   if (!workspace.workspaceFolders) {
     return;
   }
@@ -53,6 +54,16 @@ const activate = () => {
       writeFile,
     })
   );
+  context.subscriptions.push(commands.registerCommand('workspaceConfigPlus.merge', () => {
+    workspace.workspaceFolders.forEach(f =>
+      mergeConfigFiles({
+        folderUri: f.uri,
+        joinPath,
+        readFile,
+        writeFile,
+      })
+    );
+  }));
 };
 
 module.exports = {

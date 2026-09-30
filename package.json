@@ -56,6 +56,12 @@
         "url": "vscode://schemas/tasks"
       }
     ],
+    "commands": [
+        {
+        "command": "workspaceConfigPlus.merge",
+        "title": "Workspace Config+: Merge .vscode configs"
+      }
+    ],
     "configuration": {
       "type": "object",
       "title": "Workspace Config+",

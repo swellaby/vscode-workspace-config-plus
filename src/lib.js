@@ -45,6 +45,29 @@ const initializeWorkspaceFolder = ({
   });
 };
 
+const mergeConfigFiles = ({
+  folderUri,
+  joinPath,
+  readFile,
+  writeFile,
+}) => {
+  workspaceConfigFileNames.forEach(configFile => {
+    const workspaceVscodeDirUri = joinPath(folderUri, '.vscode');
+    const sharedFile = `${configFile}.shared`;
+    const localFile = `${configFile}.local`;
+    const vscodeFileUri = joinPath(workspaceVscodeDirUri, `${configFile}.json`);
+    const sharedFileUri = joinPath(workspaceVscodeDirUri, `${sharedFile}.json`);
+    const localFileUri = joinPath(workspaceVscodeDirUri, `${localFile}.json`);
+    fileHandler.mergeConfigFiles({
+      vscodeFileUri,
+      sharedFileUri,
+      localFileUri,
+      readFile,
+      writeFile,
+    });
+  });
+};
+
 const handleWorkspaceFolderUpdates = ({
   added,
   removed,
@@ -86,4 +109,5 @@ module.exports = {
   handleWorkspaceFolderUpdates,
   initializeLog,
   initializeWorkspaceFolder,
+  mergeConfigFiles,
 };

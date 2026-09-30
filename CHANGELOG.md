@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.3.0
+
+- Add command: `workspaceConfigPlus.merge` which allows manual merging of all configs.  No default keybind, you must add it yourself.
+
 ## v0.2.5
 
 - Support deep merging when merging _.shared.json and _.local.json pairs and use by default
